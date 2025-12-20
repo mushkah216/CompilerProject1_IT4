@@ -1,0 +1,10 @@
+Function=1
+Open_BRACET=2
+SEMECOLEN=3
+NUMBER_0=4
+NUMBER_1=5
+Close_BRACET=6
+'function'=1
+'('=2
+';'=3
+')'=6
