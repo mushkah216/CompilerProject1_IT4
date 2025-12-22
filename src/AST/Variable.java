@@ -11,6 +11,6 @@ public class Variable extends Expression{
     }
     @Override
     public String toString(){
-        return String.join(". ", names);
+        return String.join(".", names);
     }
 }

@@ -12,6 +12,6 @@ public  class LogicalOr extends Expression {
     }
     @Override
     public  String toString(){
-        return "(" + left+"or" +right+ ")";
+        return "(" + left +"or" +right+ ")";
     }
 }

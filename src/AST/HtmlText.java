@@ -11,6 +11,6 @@ public class HtmlText extends HtmlNode {
 
     @Override
     public String toString(){
-        return "text(" + text + ")";
+        return "HtmlText(\"" + text + "\")";
     }
 }

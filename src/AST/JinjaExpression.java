@@ -1,8 +1,6 @@
 package AST;
 
-//import java.beans.Expression;
 
-import java.beans.Expression;
 
 public class JinjaExpression extends JinjaNode{
     private Expression expression;

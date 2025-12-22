@@ -15,6 +15,6 @@ public class HtmlAttribute extends HtmlNode {
     }
     @Override
     public String toString(){
-        return   name + " =\"" + parts + "\"";
+          return "Attribute(" + name + ")";
     }
 }
