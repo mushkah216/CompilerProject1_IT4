@@ -19,8 +19,8 @@ htmlContent
     ;
 
 htmlElement
-    : TAG_OPEN TAG_NAME attribute* TAG_CLOSE htmlContent TAG_OPEN TAG_SLASH TAG_NAME TAG_CLOSE
-    | TAG_OPEN TAG_NAME attribute* TAG_SLASH_CLOSE
+    : TAG_OPEN TAG_NAME attribute* TAG_CLOSE htmlContent TAG_OPEN TAG_SLASH TAG_NAME TAG_CLOSE  #normalHtmlElement
+    | TAG_OPEN TAG_NAME attribute* TAG_SLASH_CLOSE  # selfClosingHtmlElement
     ;
 
 
@@ -95,36 +95,36 @@ jinjaStatement
 
 
 jinjaStatementBody
-    : IFKW expression
-    | ELIFKW expression
-    | ELSEKW
-    | ENDIFKW
-    | FORKW JINJA_NAME IN expression
-    | ENDFORKW
-    | SETKW JINJA_NAME ASSIGN expression
+    : IFKW expression            #jinjaIf
+    | ELIFKW expression          #jinjaElif
+    | ELSEKW                     #jinjaElse
+    | ENDIFKW                    #jinjaEndIf
+    | FORKW JINJA_NAME IN expression     #jinjaFor
+    | ENDFORKW                     #jinjaEndFor
+    | SETKW JINJA_NAME ASSIGN expression  #jinjaSet
     ;
 
 
 expression
-    : logicalAndExpression (ORKW logicalAndExpression)*
+    : logicalAndExpression (ORKW logicalAndExpression)*  #logicalOrExpr
     ;
 
 
 logicalAndExpression
-    : comparisonExpression (ANDKW comparisonExpression)*
+    : comparisonExpression (ANDKW comparisonExpression)*  #logicalAndExpr
     ;
 
 
 comparisonExpression
-    : simpleExpression ( (EQ | NEQ | GT | LT | GTE | LTE) simpleExpression )?
+    : simpleExpression ( (EQ | NEQ | GT | LT | GTE | LTE) simpleExpression )?  #comparisonExpr
     ;
 
 simpleExpression
-    : term ( (PLUS | MINUS) term )*
+    : term ( (PLUS | MINUS) term )* #addSubExpr
     ;
 
 term
-    : factor ( (STAR | SLASH | DIV | MOD) factor )*
+    : factor ( (STAR | SLASH | DIV | MOD) factor )* #mulDivExpr
     ;
 
 factor
@@ -132,7 +132,9 @@ factor
     ;
 
 primary
-    : ( JINJA_NUMBER
-      | JINJA_STRING
-      | JINJA_NAME (DOT JINJA_NAME)* | LPAREN expression RPAREN
-      ) (PIPE JINJA_NAME)* ;
+    : JINJA_NUMBER                            #numberLiteral
+    | JINJA_STRING                            #stringLiteral
+    | JINJA_NAME (DOT JINJA_NAME)*            #variableExpr
+    | LPAREN expression RPAREN                #parenExpr
+    | primary PIPE JINJA_NAME                 #filterExpr
+    ;
