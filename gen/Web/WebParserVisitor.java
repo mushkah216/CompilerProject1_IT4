@@ -23,11 +23,19 @@ public interface WebParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitHtmlContent(WebParser.HtmlContentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link WebParser#htmlElement}.
+	 * Visit a parse tree produced by the {@code normalHtmlElement}
+	 * labeled alternative in {@link WebParser#htmlElement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitHtmlElement(WebParser.HtmlElementContext ctx);
+	T visitNormalHtmlElement(WebParser.NormalHtmlElementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code selfClosingHtmlElement}
+	 * labeled alternative in {@link WebParser#htmlElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelfClosingHtmlElement(WebParser.SelfClosingHtmlElementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link WebParser#styleElement}.
 	 * @param ctx the parse tree
@@ -83,29 +91,89 @@ public interface WebParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitJinjaStatement(WebParser.JinjaStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link WebParser#jinjaStatementBody}.
+	 * Visit a parse tree produced by the {@code jinjaIf}
+	 * labeled alternative in {@link WebParser#jinjaStatementBody}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitJinjaStatementBody(WebParser.JinjaStatementBodyContext ctx);
+	T visitJinjaIf(WebParser.JinjaIfContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link WebParser#expression}.
+	 * Visit a parse tree produced by the {@code jinjaElif}
+	 * labeled alternative in {@link WebParser#jinjaStatementBody}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpression(WebParser.ExpressionContext ctx);
+	T visitJinjaElif(WebParser.JinjaElifContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link WebParser#simpleExpression}.
+	 * Visit a parse tree produced by the {@code jinjaElse}
+	 * labeled alternative in {@link WebParser#jinjaStatementBody}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSimpleExpression(WebParser.SimpleExpressionContext ctx);
+	T visitJinjaElse(WebParser.JinjaElseContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link WebParser#term}.
+	 * Visit a parse tree produced by the {@code jinjaEndIf}
+	 * labeled alternative in {@link WebParser#jinjaStatementBody}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTerm(WebParser.TermContext ctx);
+	T visitJinjaEndIf(WebParser.JinjaEndIfContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code jinjaFor}
+	 * labeled alternative in {@link WebParser#jinjaStatementBody}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJinjaFor(WebParser.JinjaForContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code jinjaEndFor}
+	 * labeled alternative in {@link WebParser#jinjaStatementBody}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJinjaEndFor(WebParser.JinjaEndForContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code jinjaSet}
+	 * labeled alternative in {@link WebParser#jinjaStatementBody}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJinjaSet(WebParser.JinjaSetContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code logicalOrExpr}
+	 * labeled alternative in {@link WebParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLogicalOrExpr(WebParser.LogicalOrExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code logicalAndExpr}
+	 * labeled alternative in {@link WebParser#logicalAndExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLogicalAndExpr(WebParser.LogicalAndExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code comparisonExpr}
+	 * labeled alternative in {@link WebParser#comparisonExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComparisonExpr(WebParser.ComparisonExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code addSubExpr}
+	 * labeled alternative in {@link WebParser#simpleExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAddSubExpr(WebParser.AddSubExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code mulDivExpr}
+	 * labeled alternative in {@link WebParser#term}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMulDivExpr(WebParser.MulDivExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link WebParser#factor}.
 	 * @param ctx the parse tree
@@ -113,9 +181,38 @@ public interface WebParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFactor(WebParser.FactorContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link WebParser#primary}.
+	 * Visit a parse tree produced by the {@code variableExpr}
+	 * labeled alternative in {@link WebParser#primary}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPrimary(WebParser.PrimaryContext ctx);
+	T visitVariableExpr(WebParser.VariableExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stringLiteral}
+	 * labeled alternative in {@link WebParser#primary}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringLiteral(WebParser.StringLiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code filterExpr}
+	 * labeled alternative in {@link WebParser#primary}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFilterExpr(WebParser.FilterExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code parenExpr}
+	 * labeled alternative in {@link WebParser#primary}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParenExpr(WebParser.ParenExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code numberLiteral}
+	 * labeled alternative in {@link WebParser#primary}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumberLiteral(WebParser.NumberLiteralContext ctx);
 }

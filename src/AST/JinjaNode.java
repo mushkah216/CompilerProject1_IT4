@@ -1,12 +1,10 @@
 package AST;
 
-public abstract class JinjaNode {
+public abstract class JinjaNode extends HtmlNode {
     public int line;
     public int column;
     public JinjaNode(int line, int column) {
-        this.line = line;
-        this.column = column;
+        super(line, column);
     }
-    @Override
-    public abstract String toString();
+
 }

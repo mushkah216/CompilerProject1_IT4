@@ -16,8 +16,7 @@ public class HtmlDocument extends HtmlNode {
 
     @Override
     public String toString() {
-        return "HtmlDocument" + children;
-
+        return "HtmlDocument " + children.toString();
     }
 
 }

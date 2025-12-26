@@ -20,8 +20,7 @@ public class HtmlElement extends HtmlNode {
     }
 
     @Override
-    public String toString(){
-        return "HtmlElement("+ tagName + ")" ;
-
+    public String toString() {
+        return "HtmlElement(" + tagName + ") children: " + children.toString();
     }
 }
