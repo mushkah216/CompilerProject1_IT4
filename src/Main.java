@@ -1,4 +1,4 @@
-import AST.HtmlDocument;
+import AST.Web.HtmlDocument;
 import Visitor.WebVisitor;
 import Web.WebLexer;
 import Web.WebParser;

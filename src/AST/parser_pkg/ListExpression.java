@@ -1,0 +1,52 @@
+package AST.parser_pkg;
+
+import AST.Python.Expression;
+import java.util.List;
+
+public class ListExpression extends Expression {
+
+    // العناصر داخل الليست (expressions عادية)
+    private final List<Expression> elements;
+
+    // optional: comprehension parts
+    private final String loopVariable;        // p
+    private final Expression iterable;         // products
+    private final Expression condition;        // p['id'] == id (optional)
+
+    // constructor لليست عادية
+    public ListExpression(List<Expression> elements) {
+        this.elements = elements;
+        this.loopVariable = null;
+        this.iterable = null;
+        this.condition = null;
+    }
+
+    // constructor لليست comprehension
+    public ListExpression(
+            Expression element,
+            String loopVariable,
+            Expression iterable,
+            Expression condition
+    ) {
+        this.elements = List.of(element);
+        this.loopVariable = loopVariable;
+        this.iterable = iterable;
+        this.condition = condition;
+    }
+
+    public List<Expression> getElements() {
+        return elements;
+    }
+
+    public String getLoopVariable() {
+        return loopVariable;
+    }
+
+    public Expression getIterable() {
+        return iterable;
+    }
+
+    public Expression getCondition() {
+        return condition;
+    }
+}

@@ -1,6 +1,6 @@
 package Visitor;
 
-import AST.*;
+import AST.Web.*;
 import Web.WebParser;
 import  Web.WebParserBaseVisitor;
 // تأكد من وجود مكتبة ANTLR في الـ Classpath ليتم التعرف على السطر التالي
