@@ -1,8 +1,5 @@
 package AST.parser_pkg;
-
-import AST.Python.ASTNode;
-
-
+import AST.Expression;
 
 public class IndexAccess extends TargetAccess {
 
@@ -15,5 +12,14 @@ public class IndexAccess extends TargetAccess {
     public Expression getIndex() {
         return index;
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── IndexAccess [Line: " + lineNumber + "]");
+        if (index != null) {
+            index.print(indent + "    ");
+        }
+    }
+
 }
 

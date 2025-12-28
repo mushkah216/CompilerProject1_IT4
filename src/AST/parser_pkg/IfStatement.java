@@ -1,5 +1,8 @@
 package AST.parser_pkg;
 
+import AST.Expression;
+import AST.Statement;
+
 import java.util.List;
 
 public class IfStatement extends Statement {
@@ -34,4 +37,25 @@ public class IfStatement extends Statement {
     public ElsePart getElsePart() {
         return elsePart;
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── IfStatement [Line: " + lineNumber + "]");
+        if (condition != null) {
+            System.out.print(indent + "    [Condition]: ");
+            condition.print("");
+        }
+        if (thenBlock != null) {
+            thenBlock.print(indent + "    [Then]");
+        }
+        if (elifParts != null) {
+            for (ElifPart elif : elifParts) {
+                elif.print(indent + "    ");
+            }
+        }
+        if (elsePart != null) {
+            elsePart.print(indent + "    ");
+        }
+    }
+
 }

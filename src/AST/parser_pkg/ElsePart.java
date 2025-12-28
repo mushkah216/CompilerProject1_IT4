@@ -1,5 +1,7 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
+
 public class ElsePart extends ASTNode {
 
     private Block block;
@@ -10,5 +12,11 @@ public class ElsePart extends ASTNode {
 
     public Block getBlock() {
         return block;
+    }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── ElsePart (Line: " + lineNumber + ")");
+        block.print(indent + "    ");
     }
 }

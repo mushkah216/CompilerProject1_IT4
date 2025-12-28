@@ -1,5 +1,7 @@
 package AST.parser_pkg;
 
+import AST.Expression;
+
 public class BooleanLiteral extends Expression {
 
     private final boolean value;
@@ -15,5 +17,10 @@ public class BooleanLiteral extends Expression {
     @Override
     public String toString() {
         return "BooleanLiteral(" + value + ")";
+    }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── BooleanLiteral: " + value + " (Line: " + lineNumber + ")");
     }
 }

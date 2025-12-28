@@ -1,5 +1,7 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,4 +25,15 @@ public class ParameterList extends ASTNode {
     public String toString() {
         return parameters.toString();
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── ParameterList [Line: " + lineNumber + "]");
+        for (Parameter p : parameters) {
+            if (p != null) {
+                p.print(indent + "    ");
+            }
+        }
+    }
+
 }

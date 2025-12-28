@@ -1,6 +1,6 @@
 package AST.parser_pkg;
 
-import AST.Python.ASTNode;
+import AST.ASTNode;
 
 public class FieldAccess extends ASTNode {
 
@@ -12,5 +12,10 @@ public class FieldAccess extends ASTNode {
 
     public String getFieldName() {
         return fieldName;
+    }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── FieldAccess: " + fieldName + " (Line: " + lineNumber + ")");
     }
 }

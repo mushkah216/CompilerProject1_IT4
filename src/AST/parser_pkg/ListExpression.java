@@ -1,6 +1,6 @@
 package AST.parser_pkg;
 
-import AST.Python.Expression;
+import AST.Expression;
 import java.util.List;
 
 public class ListExpression extends Expression {
@@ -49,4 +49,21 @@ public class ListExpression extends Expression {
     public Expression getCondition() {
         return condition;
     }
+
+    @Override
+    public void print(String indent) {
+        if (loopVariable == null) {
+            System.out.println(indent + "└── ListExpression (Elements: " + elements.size() + ") [Line: " + lineNumber + "]");
+            for (Expression expr : elements) {
+                expr.print(indent + "    ");
+            }
+        } else {
+            System.out.println(indent + "└── ListComprehension [Line: " + lineNumber + "]");
+            if (!elements.isEmpty()) elements.get(0).print(indent + "    [Element]: ");
+            System.out.println(indent + "    ├── For: " + loopVariable);
+            if (iterable != null) iterable.print(indent + "    ├── In: ");
+            if (condition != null) condition.print(indent + "    └── If: ");
+        }
+    }
+
 }

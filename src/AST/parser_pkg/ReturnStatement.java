@@ -1,5 +1,8 @@
 package AST.parser_pkg;
 
+import AST.Expression;
+import AST.Statement;
+
 public class ReturnStatement extends Statement {
 
     private Expression value; // قد تكون null
@@ -15,4 +18,13 @@ public class ReturnStatement extends Statement {
     public boolean hasValue() {
         return value != null;
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── ReturnStatement [Line: " + lineNumber + "]");
+        if (value != null) {
+            value.print(indent + "    [Value]: ");
+        }
+    }
+
 }

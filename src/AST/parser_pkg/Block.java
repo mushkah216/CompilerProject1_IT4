@@ -1,5 +1,8 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
+import AST.Statement;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,5 +29,15 @@ public class Block extends ASTNode {
             sb.append(s).append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── Block");
+        for (Statement stmt : statements) {
+            if (stmt != null) {
+                stmt.print(indent + "    ");
+            }
+        }
     }
 }

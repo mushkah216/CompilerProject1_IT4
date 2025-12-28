@@ -1,9 +1,12 @@
-// Generated from C:/CompilerRepo/CompilerProject1_IT4/src/Web/WebParser.g4 by ANTLR 4.13.2
-package Web;
+// Generated from C:/CompilerRepo/CompilerProject1_IT4/src/parser_pkg/pythonParser.g4 by ANTLR 4.13.2
+package parser_pkg;
+
+    package parser_pkg;
+
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
- * This class provides an empty implementation of {@link WebParserVisitor},
+ * This class provides an empty implementation of {@link pythonParserVisitor},
  * which can be extended to create a visitor which only needs to handle a subset
  * of the available methods.
  *
@@ -11,222 +14,250 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * operations with no return type.
  */
 @SuppressWarnings("CheckReturnValue")
-public class WebParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements WebParserVisitor<T> {
+public class pythonParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements pythonParserVisitor<T> {
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitHtmlDocument(WebParser.HtmlDocumentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitProgram(pythonParser.ProgramContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitHtmlContent(WebParser.HtmlContentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitStatement(pythonParser.StatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNormalHtmlElement(WebParser.NormalHtmlElementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSimple_stmt(pythonParser.Simple_stmtContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSelfClosingHtmlElement(WebParser.SelfClosingHtmlElementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCompound_stmt(pythonParser.Compound_stmtContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStyleElement(WebParser.StyleElementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitImportStatement(pythonParser.ImportStatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitScriptElement(WebParser.ScriptElementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFunctionDef(pythonParser.FunctionDefContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAttribute(WebParser.AttributeContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDecorator(pythonParser.DecoratorContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAttributeValue(WebParser.AttributeValueContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParameters(pythonParser.ParametersContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAttributeValueContent(WebParser.AttributeValueContentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBlock(pythonParser.BlockContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStyleContent(WebParser.StyleContentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAssignment(pythonParser.AssignmentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitScriptContent(WebParser.ScriptContentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTarget(pythonParser.TargetContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitJinjaExpression(WebParser.JinjaExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExpressionStatement(pythonParser.ExpressionStatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitJinjaStatement(WebParser.JinjaStatementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitReturnStatement(pythonParser.ReturnStatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitJinjaIf(WebParser.JinjaIfContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTestList(pythonParser.TestListContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitJinjaElif(WebParser.JinjaElifContext ctx) { return visitChildren(ctx); }
+	@Override public T visitIfStatement(pythonParser.IfStatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitJinjaElse(WebParser.JinjaElseContext ctx) { return visitChildren(ctx); }
+	@Override public T visitElifPart(pythonParser.ElifPartContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitJinjaEndIf(WebParser.JinjaEndIfContext ctx) { return visitChildren(ctx); }
+	@Override public T visitElsePart(pythonParser.ElsePartContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitJinjaFor(WebParser.JinjaForContext ctx) { return visitChildren(ctx); }
+	@Override public T visitWhileStatement(pythonParser.WhileStatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitJinjaEndFor(WebParser.JinjaEndForContext ctx) { return visitChildren(ctx); }
+	@Override public T visitForStatement(pythonParser.ForStatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitJinjaSet(WebParser.JinjaSetContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExpression(pythonParser.ExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLogicalOrExpr(WebParser.LogicalOrExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLogic_expr(pythonParser.Logic_exprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLogicalAndExpr(WebParser.LogicalAndExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitComparison(pythonParser.ComparisonContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitComparisonExpr(WebParser.ComparisonExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArith_expr(pythonParser.Arith_exprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAddSubExpr(WebParser.AddSubExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTerm(pythonParser.TermContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitMulDivExpr(WebParser.MulDivExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFactor(pythonParser.FactorContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFactor(WebParser.FactorContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTrailer(pythonParser.TrailerContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitVariableExpr(WebParser.VariableExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArgList(pythonParser.ArgListContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStringLiteral(WebParser.StringLiteralContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTestList_comp(pythonParser.TestList_compContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFilterExpr(WebParser.FilterExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArgument(pythonParser.ArgumentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParenExpr(WebParser.ParenExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAtom(pythonParser.AtomContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNumberLiteral(WebParser.NumberLiteralContext ctx) { return visitChildren(ctx); }
+	@Override public T visitListLiteral(pythonParser.ListLiteralContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitDictLiteral(pythonParser.DictLiteralContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitDictEntry(pythonParser.DictEntryContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitComp_for(pythonParser.Comp_forContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitComp_iter(pythonParser.Comp_iterContext ctx) { return visitChildren(ctx); }
 }

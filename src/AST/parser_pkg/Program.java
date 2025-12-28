@@ -1,5 +1,8 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
+import AST.Statement;
+
 import java.util.ArrayList;
 import java.util.List;
 public class Program extends ASTNode {
@@ -16,5 +19,16 @@ public class Program extends ASTNode {
     public List<Statement> getStatements() {
         return statements;
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println("Program [Line: " + lineNumber + "]");
+        for (Statement stmt : statements) {
+            if (stmt != null) {
+                stmt.print(indent + "    ");
+            }
+        }
+    }
+
 }
 

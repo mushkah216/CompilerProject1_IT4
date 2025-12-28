@@ -1,4 +1,4 @@
-// Generated from C:/Users/DELL/IdeaProjects/untitled2/src/Web/WebParser.g4 by ANTLR 4.13.2
+// Generated from C:/CompilerRepo/CompilerProject1_IT4/src/Web/WebParser.g4 by ANTLR 4.13.2
 package Web;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;

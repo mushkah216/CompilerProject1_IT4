@@ -1,6 +1,6 @@
 package AST.parser_pkg;
 
-import AST.Python.Expression;
+import AST.Expression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,5 +30,11 @@ public class DictExpression extends Expression {
         }
         sb.append("}");
         return sb.toString();
+    }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── DictExpression (Line: " + lineNumber + ")");
+        for (DictEntry entry : entries) entry.print(indent + "    ");
     }
 }

@@ -16,4 +16,10 @@ public class StringLiteral extends Literal {
     public String toString() {
         return "StringLiteral(\"" + value + "\")";
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── StringLiteral: \"" + value + "\" [Line: " + lineNumber + "]");
+    }
+
 }

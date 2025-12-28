@@ -1,8 +1,9 @@
 package AST.parser_pkg;
 
-import AST.Python.Expression;
+import AST.ASTNode;
+import AST.Expression;
 
-public class DictEntry {
+public class DictEntry extends ASTNode {
 
     private final Expression key;
     private final Expression value;
@@ -20,8 +21,11 @@ public class DictEntry {
         return value;
     }
 
-    @Override
-    public String toString() {
-        return key + ": " + value;
-    }
+        @Override
+        public void print(String indent) {
+            System.out.println(indent + "└── DictEntry (Line: " + lineNumber + ")");
+            key.print(indent + "    [Key] ");
+            value.print(indent + "    [Value] ");
+        }
+
 }

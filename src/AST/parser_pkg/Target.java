@@ -1,5 +1,7 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
+
 import java.util.List;
 
 public class Target extends ASTNode {
@@ -19,4 +21,15 @@ public class Target extends ASTNode {
     public List<TargetAccess> getAccesses() {
         return accesses;
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── Target: " + baseName + " [Line: " + lineNumber + "]");
+        if (accesses != null) {
+            for (TargetAccess access : accesses) {
+                access.print(indent + "    ");
+            }
+        }
+    }
+
 }

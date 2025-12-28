@@ -1,6 +1,7 @@
 package AST.parser_pkg;
 
-import AST.Python.Expression;
+import AST.ASTNode;
+import AST.Expression;
 
 public class ElifPart extends ASTNode {
 
@@ -18,5 +19,12 @@ public class ElifPart extends ASTNode {
 
     public Block getBlock() {
         return block;
+    }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── ElifPart (Line: " + lineNumber + ")");
+        condition.print(indent + "    ");
+        block.print(indent + "    ");
     }
 }

@@ -126,7 +126,7 @@ testList_comp:
     ;
 
 argument:
-    (ID EQ)? expression
+    (name=ID EQ)? value=expression
     ;
 
 atom:

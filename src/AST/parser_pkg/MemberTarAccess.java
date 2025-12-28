@@ -11,4 +11,10 @@ public class MemberTarAccess extends TargetAccess {
     public String getName() {
         return name;
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── MemberTargetAccess: " + name + " [Line: " + lineNumber + "]");
+    }
+
 }

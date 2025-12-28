@@ -1,5 +1,7 @@
 package AST.parser_pkg;
 
+import AST.Expression;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,5 +31,20 @@ public class FunctionCall extends Expression {
     public List<Expression> getArguments() {
         return arguments;
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── FunctionCall [Line: " + lineNumber + "]");
+        if (callee != null) {
+            System.out.print(indent + "    [Callee]: ");
+            callee.print("");
+        }
+        if (arguments != null && !arguments.isEmpty()) {
+            for (Expression arg : arguments) {
+                arg.print(indent + "    ");
+            }
+        }
+    }
+
 }
 

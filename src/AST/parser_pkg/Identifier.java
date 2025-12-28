@@ -1,5 +1,7 @@
 package AST.parser_pkg;
 
+import AST.Expression;
+
 public class Identifier extends Expression {
 
     private final String name;
@@ -16,4 +18,10 @@ public class Identifier extends Expression {
     public String toString() {
         return "Identifier(" + name + ")";
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── Identifier: " + name + " [Line: " + lineNumber + "]");
+    }
+
 }

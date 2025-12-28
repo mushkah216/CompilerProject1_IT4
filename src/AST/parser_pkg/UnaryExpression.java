@@ -1,6 +1,6 @@
 package AST.parser_pkg;
 
-import AST.Python.Expression;
+import AST.Expression;
 
 public class UnaryExpression extends Expression {
 
@@ -19,4 +19,13 @@ public class UnaryExpression extends Expression {
     public Expression getOperand() {
         return operand;
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── UnaryExpression (Op: " + operator + ") [Line: " + lineNumber + "]");
+        if (operand != null) {
+            operand.print(indent + "    ");
+        }
+    }
+
 }

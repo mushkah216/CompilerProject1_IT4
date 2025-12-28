@@ -1,5 +1,8 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
+import AST.Expression;
+
 public class Argument extends ASTNode {
 
     private String name; // null إذا positional
@@ -24,5 +27,14 @@ public class Argument extends ASTNode {
 
     public Expression getValue() {
         return value;
+    }
+
+    @Override
+    public void print(String indent) {
+        String type = isKeyword() ? "KeywordArgument (" + name + ")" : "PositionalArgument";
+        System.out.println(indent + "└── " + type + " [Line: " + lineNumber + "]");
+        if (value != null) {
+            value.print(indent + "    ");
+        }
     }
 }

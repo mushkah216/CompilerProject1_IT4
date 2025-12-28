@@ -1,5 +1,7 @@
 package AST.parser_pkg;
 
+import AST.Statement;
+
 import java.util.List;
 
 public class ImportStatement extends Statement {
@@ -43,4 +45,21 @@ public class ImportStatement extends Statement {
     public boolean isImportAll() {
         return importAll;
     }
+
+    @Override
+    public void print(String indent) {
+        String type = isFromImport ? "FromImport" : "Import";
+        System.out.println(indent + "└── " + type + " [Line: " + lineNumber + "]");
+        System.out.println(indent + "    ├── Module: " + module);
+        if (names != null && !names.isEmpty()) {
+            System.out.println(indent + "    ├── Names: " + names);
+        }
+        if (alias != null) {
+            System.out.println(indent + "    └── Alias: " + alias);
+        }
+        if (importAll) {
+            System.out.println(indent + "    └── ImportAll (*)");
+        }
+    }
+
 }

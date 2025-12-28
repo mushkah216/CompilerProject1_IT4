@@ -1,5 +1,8 @@
 package AST.parser_pkg;
 
+import AST.Expression;
+import AST.Statement;
+
 public class WhileStatement extends Statement {
 
     private Expression condition;
@@ -17,4 +20,17 @@ public class WhileStatement extends Statement {
     public Block getBody() {
         return body;
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── WhileStatement [Line: " + lineNumber + "]");
+        if (condition != null) {
+            System.out.print(indent + "    [Condition]: ");
+            condition.print("");
+        }
+        if (body != null) {
+            body.print(indent + "    [Body]");
+        }
+    }
+
 }

@@ -1,6 +1,6 @@
 package AST.parser_pkg;
 
-import AST.Python.Expression;
+import AST.Expression;
 
 public class BinaryExpression extends Expression {
 
@@ -24,5 +24,12 @@ public class BinaryExpression extends Expression {
 
     public String getOperator() {
         return operator;
+    }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── BinaryExpression (Op: " + operator + ") [Line: " + lineNumber + "]");
+        if (left != null) left.print(indent + "    ");
+        if (right != null) right.print(indent + "    ");
     }
 }

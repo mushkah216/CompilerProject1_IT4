@@ -1,5 +1,8 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
+import AST.Expression;
+
 import java.util.List;
 
 public class Decorator extends ASTNode {
@@ -22,4 +25,13 @@ public class Decorator extends ASTNode {
     public List<Expression> getArguments() {
         return arguments;
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── Decorator: @" + String.join(".", nameParts) + " (Line: " + lineNumber + ")");
+        if (arguments != null) {
+            for (Expression arg : arguments) arg.print(indent + "    ");
+        }
+    }
+
 }

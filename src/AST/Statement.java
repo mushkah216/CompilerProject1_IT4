@@ -1,4 +1,5 @@
-package AST.parser_pkg;
+package AST;
 
 public abstract class Statement extends ASTNode {
+
 }

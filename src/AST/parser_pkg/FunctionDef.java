@@ -1,5 +1,7 @@
 package AST.parser_pkg;
 
+import AST.Statement;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,4 +38,16 @@ public class FunctionDef extends Statement {
                 ", body=\n" + body +
                 '}';
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── FunctionDef: " + name + " [Line: " + lineNumber + "]");
+        if (parameters != null) {
+            parameters.print(indent + "    ");
+        }
+        if (body != null) {
+            body.print(indent + "    ");
+        }
+    }
+
 }

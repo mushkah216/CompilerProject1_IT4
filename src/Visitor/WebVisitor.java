@@ -1,8 +1,7 @@
 package Visitor;
 
 import AST.Web.*;
-import Web.WebParser;
-import  Web.WebParserBaseVisitor;
+import Web.*;
 // تأكد من وجود مكتبة ANTLR في الـ Classpath ليتم التعرف على السطر التالي
 import org.antlr.v4.runtime.tree.TerminalNode;
 

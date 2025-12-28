@@ -6,4 +6,10 @@ public class NoneLiteral extends Literal {
     public String toString() {
         return "NoneLiteral";
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── NoneLiteral [Line: " + lineNumber + "]");
+    }
+
 }

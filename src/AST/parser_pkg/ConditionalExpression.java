@@ -1,6 +1,6 @@
 package AST.parser_pkg;
 
-import AST.Python.Expression;
+import AST.Expression;
 
 public class ConditionalExpression extends Expression {
 
@@ -32,4 +32,13 @@ public class ConditionalExpression extends Expression {
     public String toString() {
         return "(" + thenExpr + " if " + condition + " else " + elseExpr + ")";
     }
+
+    @Override
+    public void print(String indent) {
+        System.out.println(indent + "└── ConditionalExpression (Line: " + lineNumber + ")");
+        condition.print(indent + "    ");
+        thenExpr.print(indent + "    ");
+        elseExpr.print(indent + "    ");
+    }
+
 }

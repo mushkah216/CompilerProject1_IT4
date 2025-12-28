@@ -4,8 +4,6 @@ lexer grammar pythonLexer;
     package parser_pkg;
 }
 
-// استبدلي كل شيء بين @members { ... } بهذا الكود
-// استبدلي قسم @members بالكامل بهذا الكود الجديد
 @members {
     private java.util.Queue<Token> tokens = new java.util.LinkedList<>();
     private java.util.Stack<Integer> indents = new java.util.Stack<>();
