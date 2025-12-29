@@ -61,6 +61,44 @@ public class Main{
 
 
     }
+
+
+        // printing python(flask) AST
+//        String filePath = "src/parser_pkg/test.txt"; // تأكد أن المسار صحيح بالنسبة لمجلد التشغيل
+//
+//        try {
+//            System.out.println("Reading from file: " + filePath);
+//            System.out.println("------------------------------------");
+//
+//            // 1. القراءة من الملف وتحويله إلى Tokens
+//            CharStream input = CharStreams.fromFileName(filePath);
+//            pythonLexer lexer = new pythonLexer(input);
+//            CommonTokenStream tokens = new CommonTokenStream(lexer);
+//
+//            // 2. بناء الـ Parse Tree (الشجرة الأولية من ANTLR)
+//            pythonParser parser = new pythonParser(tokens);
+//            ParseTree tree = parser.program();
+//
+//            // 3. استخدام الـ Visitor لتحويلها إلى AST
+//            PythonVisitor visitor = new PythonVisitor();
+//            Program astRoot = (Program) visitor.visit(tree);
+//
+//            // 4. طباعة شجرة الـ AST النهائية
+//            System.out.println("\n--- Final Abstract Syntax Tree ---");
+//            if (astRoot != null) {
+//                astRoot.print(""); // دالة الطباعة التي طورناها معاً
+//            } else {
+//                System.out.println("The AST is empty or null.");
+//            }
+//
+//        } catch (IOException e) {
+//            System.err.println("Error: Could not read file. Make sure 'test.txt' exists.");
+//        } catch (Exception e) {
+//            System.err.println("Unexpected Error: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//
+    }
 }
 
 
