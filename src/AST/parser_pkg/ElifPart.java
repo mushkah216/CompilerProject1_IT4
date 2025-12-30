@@ -3,6 +3,9 @@ package AST.parser_pkg;
 import AST.ASTNode;
 import AST.Expression;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ElifPart extends ASTNode {
 
     private Expression condition;
@@ -22,9 +25,10 @@ public class ElifPart extends ASTNode {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── ElifPart (Line: " + lineNumber + ")");
-        condition.print(indent + "    ");
-        block.print(indent + "    ");
+    public List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>();
+        if (condition != null) children.add(condition);
+        if (block != null) children.add(block);
+        return children;
     }
 }

@@ -3,6 +3,8 @@ package AST.parser_pkg;
 import AST.ASTNode;
 import AST.Expression;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Decorator extends ASTNode {
@@ -27,11 +29,13 @@ public class Decorator extends ASTNode {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── Decorator: @" + String.join(".", nameParts) + " (Line: " + lineNumber + ")");
-        if (arguments != null) {
-            for (Expression arg : arguments) arg.print(indent + "    ");
-        }
+    protected String getExtraInfo() {
+        return "@" + String.join(".", nameParts);
+    }
+
+    @Override
+    protected List<ASTNode> getChildren() {
+        return (arguments != null) ? new ArrayList<>(arguments) : Collections.emptyList();
     }
 
 }

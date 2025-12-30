@@ -4,8 +4,4 @@ import AST.ASTNode;
 
 public abstract class TargetAccess extends ASTNode {
 
-    @Override
-    public void print(String indent) {
-    }
-
 }

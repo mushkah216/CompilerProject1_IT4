@@ -15,7 +15,7 @@ public class FieldAccess extends ASTNode {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── FieldAccess: " + fieldName + " (Line: " + lineNumber + ")");
+    protected String getExtraInfo() {
+        return fieldName;
     }
 }

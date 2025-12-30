@@ -21,11 +21,8 @@ public class ArgumentList extends ASTNode {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── ArgumentList [Line: " + lineNumber + "]");
-        for (Argument arg : arguments) {
-            arg.print(indent + "    ");
-        }
+    protected List<ASTNode> getChildren() {
+        return new ArrayList<>(arguments);
     }
 }
 

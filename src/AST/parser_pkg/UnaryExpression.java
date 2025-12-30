@@ -1,6 +1,10 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Expression;
+
+import java.util.Collections;
+import java.util.List;
 
 public class UnaryExpression extends Expression {
 
@@ -21,11 +25,13 @@ public class UnaryExpression extends Expression {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── UnaryExpression (Op: " + operator + ") [Line: " + lineNumber + "]");
-        if (operand != null) {
-            operand.print(indent + "    ");
-        }
+    protected String getExtraInfo() {
+        return operator;
+    }
+
+    @Override
+    public List<ASTNode> getChildren() {
+        return (operand != null) ? Collections.singletonList(operand) : Collections.emptyList();
     }
 
 }

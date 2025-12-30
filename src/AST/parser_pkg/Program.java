@@ -21,13 +21,8 @@ public class Program extends ASTNode {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println("Program [Line: " + lineNumber + "]");
-        for (Statement stmt : statements) {
-            if (stmt != null) {
-                stmt.print(indent + "    ");
-            }
-        }
+    public List<ASTNode> getChildren() {
+        return new ArrayList<>(statements);
     }
 
 }

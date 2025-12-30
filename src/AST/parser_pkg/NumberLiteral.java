@@ -20,8 +20,8 @@ public class NumberLiteral extends Expression {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── NumberLiteral: " + value + " [Line: " + lineNumber + "]");
+    protected String getExtraInfo() {
+        return String.valueOf(value);
     }
 
 }

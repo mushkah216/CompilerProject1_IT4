@@ -1,7 +1,11 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Expression;
 import AST.Statement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ForStatement extends Statement {
 
@@ -28,9 +32,15 @@ public class ForStatement extends Statement {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── ForStatement (Iter: " + iterator + ") (Line: " + lineNumber + ")");
-        iterable.print(indent + "    [In] ");
-        body.print(indent + "    [Body] ");
+    protected String getExtraInfo() {
+        return "Iter: " + iterator;
+    }
+
+    @Override
+    public List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>();
+        if (iterable != null) children.add(iterable);
+        if (body != null) children.add(body);
+        return children;
     }
 }

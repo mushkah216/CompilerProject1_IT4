@@ -2,6 +2,8 @@ package AST.parser_pkg;
 
 import AST.ASTNode;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Target extends ASTNode {
@@ -23,13 +25,13 @@ public class Target extends ASTNode {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── Target: " + baseName + " [Line: " + lineNumber + "]");
-        if (accesses != null) {
-            for (TargetAccess access : accesses) {
-                access.print(indent + "    ");
-            }
-        }
+    protected String getExtraInfo() {
+        return baseName;
+    }
+
+    @Override
+    public List<ASTNode> getChildren() {
+        return (accesses != null) ? new ArrayList<>(accesses) : Collections.emptyList();
     }
 
 }

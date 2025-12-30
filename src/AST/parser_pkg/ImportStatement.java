@@ -47,19 +47,9 @@ public class ImportStatement extends Statement {
     }
 
     @Override
-    public void print(String indent) {
-        String type = isFromImport ? "FromImport" : "Import";
-        System.out.println(indent + "└── " + type + " [Line: " + lineNumber + "]");
-        System.out.println(indent + "    ├── Module: " + module);
-        if (names != null && !names.isEmpty()) {
-            System.out.println(indent + "    ├── Names: " + names);
-        }
-        if (alias != null) {
-            System.out.println(indent + "    └── Alias: " + alias);
-        }
-        if (importAll) {
-            System.out.println(indent + "    └── ImportAll (*)");
-        }
+    protected String getExtraInfo() {
+        String type = isFromImport ? "From: " : "Module: ";
+        return type + module + (alias != null ? " as " + alias : "");
     }
 
 }

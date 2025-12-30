@@ -2,6 +2,9 @@ package AST.parser_pkg;
 
 import AST.ASTNode;
 
+import java.util.Collections;
+import java.util.List;
+
 public class ElsePart extends ASTNode {
 
     private Block block;
@@ -15,8 +18,7 @@ public class ElsePart extends ASTNode {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── ElsePart (Line: " + lineNumber + ")");
-        block.print(indent + "    ");
+    public List<ASTNode> getChildren() {
+        return (block != null) ? Collections.singletonList(block) : Collections.emptyList();
     }
 }

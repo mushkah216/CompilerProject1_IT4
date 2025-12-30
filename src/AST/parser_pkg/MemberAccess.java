@@ -1,6 +1,10 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Expression;
+
+import java.util.Collections;
+import java.util.List;
 
 public class MemberAccess extends Expression {
 
@@ -26,11 +30,13 @@ public class MemberAccess extends Expression {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── MemberAccess: ." + memberName + " [Line: " + lineNumber + "]");
-        if (object != null) {
-            object.print(indent + "    ");
-        }
+    protected String getExtraInfo() {
+        return "." + memberName;
+    }
+
+    @Override
+    public List<ASTNode> getChildren() {
+        return (object != null) ? Collections.singletonList(object) : Collections.emptyList();
     }
 
 }

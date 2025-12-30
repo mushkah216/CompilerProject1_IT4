@@ -1,6 +1,10 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Expression;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BinaryExpression extends Expression {
 
@@ -27,9 +31,15 @@ public class BinaryExpression extends Expression {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── BinaryExpression (Op: " + operator + ") [Line: " + lineNumber + "]");
-        if (left != null) left.print(indent + "    ");
-        if (right != null) right.print(indent + "    ");
+    protected String getExtraInfo() {
+        return operator;
+    }
+
+    @Override
+    protected List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>();
+        if (left != null) children.add(left);
+        if (right != null) children.add(right);
+        return children;
     }
 }

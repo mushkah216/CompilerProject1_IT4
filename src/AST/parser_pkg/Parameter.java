@@ -16,8 +16,7 @@ public class Parameter extends ASTNode {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── Parameter: " + name + " [Line: " + lineNumber + "]");
+    protected String getExtraInfo() {
+        return name;
     }
-
 }

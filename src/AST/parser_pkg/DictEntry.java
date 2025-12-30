@@ -3,6 +3,9 @@ package AST.parser_pkg;
 import AST.ASTNode;
 import AST.Expression;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DictEntry extends ASTNode {
 
     private final Expression key;
@@ -21,11 +24,12 @@ public class DictEntry extends ASTNode {
         return value;
     }
 
-        @Override
-        public void print(String indent) {
-            System.out.println(indent + "└── DictEntry (Line: " + lineNumber + ")");
-            key.print(indent + "    [Key] ");
-            value.print(indent + "    [Value] ");
-        }
+    @Override
+    public List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>();
+        if (key != null) children.add(key);
+        if (value != null) children.add(value);
+        return children;
+    }
 
 }

@@ -1,5 +1,6 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Expression;
 
 import java.util.ArrayList;
@@ -33,8 +34,7 @@ public class DictExpression extends Expression {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── DictExpression (Line: " + lineNumber + ")");
-        for (DictEntry entry : entries) entry.print(indent + "    ");
+    public List<ASTNode> getChildren() {
+        return new ArrayList<>(entries);
     }
 }

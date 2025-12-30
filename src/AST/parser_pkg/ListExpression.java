@@ -1,6 +1,9 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Expression;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListExpression extends Expression {
@@ -51,19 +54,16 @@ public class ListExpression extends Expression {
     }
 
     @Override
-    public void print(String indent) {
-        if (loopVariable == null) {
-            System.out.println(indent + "└── ListExpression (Elements: " + elements.size() + ") [Line: " + lineNumber + "]");
-            for (Expression expr : elements) {
-                expr.print(indent + "    ");
-            }
-        } else {
-            System.out.println(indent + "└── ListComprehension [Line: " + lineNumber + "]");
-            if (!elements.isEmpty()) elements.get(0).print(indent + "    [Element]: ");
-            System.out.println(indent + "    ├── For: " + loopVariable);
-            if (iterable != null) iterable.print(indent + "    ├── In: ");
-            if (condition != null) condition.print(indent + "    └── If: ");
-        }
+    protected String getExtraInfo() {
+        return (loopVariable != null) ? "Comprehension (for " + loopVariable + ")" : "Size: " + elements.size();
+    }
+
+    @Override
+    public List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>(elements);
+        if (iterable != null) children.add(iterable);
+        if (condition != null) children.add(condition);
+        return children;
     }
 
 }

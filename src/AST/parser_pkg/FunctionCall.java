@@ -1,5 +1,6 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Expression;
 
 import java.util.ArrayList;
@@ -33,17 +34,15 @@ public class FunctionCall extends Expression {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── FunctionCall [Line: " + lineNumber + "]");
-        if (callee != null) {
-            System.out.print(indent + "    [Callee]: ");
-            callee.print("");
-        }
-        if (arguments != null && !arguments.isEmpty()) {
+    public List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>();
+        if (callee != null) children.add(callee);
+        if (arguments != null) {
             for (Expression arg : arguments) {
-                arg.print(indent + "    ");
+                if (arg != null) children.add(arg);
             }
         }
+        return children;
     }
 
 }

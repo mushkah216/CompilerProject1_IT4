@@ -1,6 +1,10 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Expression;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConditionalExpression extends Expression {
 
@@ -34,11 +38,12 @@ public class ConditionalExpression extends Expression {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── ConditionalExpression (Line: " + lineNumber + ")");
-        condition.print(indent + "    ");
-        thenExpr.print(indent + "    ");
-        elseExpr.print(indent + "    ");
+    protected List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>();
+        if (condition != null) children.add(condition);
+        if (thenExpr != null) children.add(thenExpr);
+        if (elseExpr != null) children.add(elseExpr);
+        return children;
     }
 
 }

@@ -32,12 +32,8 @@ public class Block extends ASTNode {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── Block");
-        for (Statement stmt : statements) {
-            if (stmt != null) {
-                stmt.print(indent + "    ");
-            }
-        }
+    protected List<ASTNode> getChildren() {
+        return new ArrayList<>(statements);
     }
+
 }

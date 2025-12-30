@@ -4,6 +4,9 @@ import AST.ASTNode;
 import AST.Expression;
 import AST.Statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Assignment extends Statement {
 
     private Target target;
@@ -23,14 +26,15 @@ public class Assignment extends Statement {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── Assignment [Line: " + lineNumber + "]");
-        if (target != null) {
-            ((ASTNode)target).print(indent + "    ");
-        }
-        if (value != null) {
-            value.print(indent + "    ");
-        }
+    protected String getExtraInfo() {
+        return (target != null) ? target.toString() : "";
     }
 
+    @Override
+    protected List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>();
+        if (target instanceof ASTNode) children.add((ASTNode) target);
+        if (value != null) children.add(value);
+        return children;
+    }
 }

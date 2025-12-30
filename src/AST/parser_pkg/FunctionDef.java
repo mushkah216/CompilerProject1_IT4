@@ -1,5 +1,6 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Statement;
 
 import java.util.ArrayList;
@@ -40,14 +41,16 @@ public class FunctionDef extends Statement {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── FunctionDef: " + name + " [Line: " + lineNumber + "]");
-        if (parameters != null) {
-            parameters.print(indent + "    ");
-        }
-        if (body != null) {
-            body.print(indent + "    ");
-        }
+    protected String getExtraInfo() {
+        return name;
+    }
+
+    @Override
+    public List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>();
+        if (parameters != null) children.add(parameters);
+        if (body != null) children.add(body);
+        return children;
     }
 
 }

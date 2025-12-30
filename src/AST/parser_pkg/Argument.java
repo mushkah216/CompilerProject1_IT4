@@ -3,6 +3,9 @@ package AST.parser_pkg;
 import AST.ASTNode;
 import AST.Expression;
 
+import java.util.Collections;
+import java.util.List;
+
 public class Argument extends ASTNode {
 
     private String name; // null إذا positional
@@ -30,11 +33,13 @@ public class Argument extends ASTNode {
     }
 
     @Override
-    public void print(String indent) {
-        String type = isKeyword() ? "KeywordArgument (" + name + ")" : "PositionalArgument";
-        System.out.println(indent + "└── " + type + " [Line: " + lineNumber + "]");
-        if (value != null) {
-            value.print(indent + "    ");
-        }
+    protected String getExtraInfo() {
+        return isKeyword() ? "Keyword: " + name : "Positional";
     }
+
+    @Override
+    protected List<ASTNode> getChildren() {
+        return Collections.singletonList(value);
+    }
+
 }

@@ -8,11 +8,5 @@ public class GenericBinaryExpression extends BinaryExpression {
         super(left, operator, right);
     }
 
-    @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── GenericBinaryExpression (Op: " + operator + ") [Line: " + lineNumber + "]");
-        if (left != null) left.print(indent + "    ");
-        if (right != null) right.print(indent + "    ");
-    }
 
 }

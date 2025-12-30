@@ -1,7 +1,11 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Expression;
 import AST.Statement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WhileStatement extends Statement {
 
@@ -22,15 +26,11 @@ public class WhileStatement extends Statement {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── WhileStatement [Line: " + lineNumber + "]");
-        if (condition != null) {
-            System.out.print(indent + "    [Condition]: ");
-            condition.print("");
-        }
-        if (body != null) {
-            body.print(indent + "    [Body]");
-        }
+    public List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>();
+        if (condition != null) children.add(condition);
+        if (body != null) children.add(body);
+        return children;
     }
 
 }

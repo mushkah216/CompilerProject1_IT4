@@ -1,7 +1,11 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Expression;
 import AST.Statement;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ReturnStatement extends Statement {
 
@@ -20,11 +24,8 @@ public class ReturnStatement extends Statement {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── ReturnStatement [Line: " + lineNumber + "]");
-        if (value != null) {
-            value.print(indent + "    [Value]: ");
-        }
+    public List<ASTNode> getChildren() {
+        return (value != null) ? Collections.singletonList(value) : Collections.emptyList();
     }
 
 }

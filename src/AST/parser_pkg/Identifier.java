@@ -20,8 +20,8 @@ public class Identifier extends Expression {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── Identifier: " + name + " [Line: " + lineNumber + "]");
+    protected String getExtraInfo() {
+        return name;
     }
 
 }

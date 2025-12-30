@@ -20,7 +20,7 @@ public class BooleanLiteral extends Expression {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── BooleanLiteral: " + value + " (Line: " + lineNumber + ")");
+    protected String getExtraInfo() {
+        return String.valueOf(value);
     }
 }

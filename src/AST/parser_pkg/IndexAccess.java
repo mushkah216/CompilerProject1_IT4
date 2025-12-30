@@ -1,5 +1,9 @@
 package AST.parser_pkg;
+import AST.ASTNode;
 import AST.Expression;
+
+import java.util.Collections;
+import java.util.List;
 
 public class IndexAccess extends TargetAccess {
 
@@ -14,11 +18,8 @@ public class IndexAccess extends TargetAccess {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── IndexAccess [Line: " + lineNumber + "]");
-        if (index != null) {
-            index.print(indent + "    ");
-        }
+    public List<ASTNode> getChildren() {
+        return (index != null) ? Collections.singletonList(index) : Collections.emptyList();
     }
 
 }

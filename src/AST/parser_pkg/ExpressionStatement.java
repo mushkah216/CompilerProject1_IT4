@@ -1,7 +1,11 @@
 package AST.parser_pkg;
 
+import AST.ASTNode;
 import AST.Expression;
 import AST.Statement;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ExpressionStatement extends Statement {
 
@@ -21,8 +25,7 @@ public class ExpressionStatement extends Statement {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── ExpressionStatement (Line: " + lineNumber + ")");
-        expression.print(indent + "    ");
+    public List<ASTNode> getChildren() {
+        return (expression != null) ? Collections.singletonList(expression) : Collections.emptyList();
     }
 }

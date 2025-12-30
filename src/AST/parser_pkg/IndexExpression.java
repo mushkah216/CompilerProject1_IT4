@@ -1,7 +1,11 @@
 package AST.parser_pkg;
 
 
+import AST.ASTNode;
 import AST.Expression;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IndexExpression extends Expression {
 
@@ -19,16 +23,11 @@ public class IndexExpression extends Expression {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── IndexExpression [Line: " + lineNumber + "]");
-        if (object != null) {
-            System.out.print(indent + "    [Object]: ");
-            object.print("");
-        }
-        if (index != null) {
-            System.out.print(indent + "    [Index]: ");
-            index.print("");
-        }
+    public List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>();
+        if (object != null) children.add(object);
+        if (index != null) children.add(index);
+        return children;
     }
 
 

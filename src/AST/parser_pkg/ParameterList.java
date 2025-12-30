@@ -27,13 +27,8 @@ public class ParameterList extends ASTNode {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── ParameterList [Line: " + lineNumber + "]");
-        for (Parameter p : parameters) {
-            if (p != null) {
-                p.print(indent + "    ");
-            }
-        }
+    public List<ASTNode> getChildren() {
+        return new ArrayList<>(parameters);
     }
 
 }

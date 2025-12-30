@@ -18,8 +18,8 @@ public class StringLiteral extends Literal {
     }
 
     @Override
-    public void print(String indent) {
-        System.out.println(indent + "└── StringLiteral: \"" + value + "\" [Line: " + lineNumber + "]");
+    protected String getExtraInfo() {
+        return "\"" + value + "\"";
     }
 
 }
