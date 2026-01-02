@@ -41,6 +41,28 @@ public class WebVisitor extends WebParserBaseVisitor<Object> {
         return doc;
     }
 
+    @Override
+    public Object visitSelfClosingHtmlElement(WebParser.SelfClosingHtmlElementContext ctx) {
+
+        HtmlSelfClosingElement element = new HtmlSelfClosingElement(
+                ctx.TAG_NAME().getText(),
+                ctx.start.getLine(),
+                ctx.start.getCharPositionInLine()
+        );
+
+
+        if (ctx.attribute() != null) {
+            for (WebParser.AttributeContext attrCtx : ctx.attribute()) {
+                Object attr = visit(attrCtx);
+                if (attr instanceof HtmlAttribute) {
+                    element.addAttribute((HtmlAttribute) attr);
+                }
+            }
+        }
+
+        return element;
+    }
+
 
     @Override
     public Object visitHtmlContent(WebParser.HtmlContentContext ctx) {
@@ -253,6 +275,10 @@ public class WebVisitor extends WebParserBaseVisitor<Object> {
     public Object visitJinjaEndFor(WebParser.JinjaEndForContext ctx) {
         exitScope();
         return visitChildren(ctx);
+    }
+
+    public SymbolTable.WebSymbolTable getSymbolTable() {
+        return this.symbolTable;
     }
 
 }

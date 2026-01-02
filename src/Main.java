@@ -19,14 +19,14 @@ public class Main{
 
         // Testing python(flask) AST & Symbol Table
 
-        String filePath = "src/parser_pkg/test.txt";
+        String filePathP = "src/parser_pkg/test.txt";
 
         ParseTree tree = null;
         try {
-            System.out.println("Reading from file: " + filePath);
+            System.out.println("Reading from file: " + filePathP);
             System.out.println("------------------------------------");
 
-            CharStream input = CharStreams.fromFileName(filePath);
+            CharStream input = CharStreams.fromFileName(filePathP);
             pythonLexer lexer = new pythonLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -49,38 +49,44 @@ public class Main{
             System.err.println("Unexpected Error: " + e.getMessage());
             e.printStackTrace();
         }
+        System.out.println();
+        System.out.println();
+        System.out.println("///////////// End Of Python Part /////////////");
+        System.out.println();
+        System.out.println();
 
 
-//        // Testing Jinja2 AST & Symbol Table
-//
-//        WebVisitor visitor = null;
-//        try {
-//
-//            String filePath = "web.txt";
-//            String input = new String(Files.readAllBytes(Paths.get(filePath)));
-//
-//            // تنفيذ عملية الـ Parsing كالمعتاد
-//            WebLexer lexer = new WebLexer(CharStreams.fromString(input));
-//            CommonTokenStream tokens = new CommonTokenStream(lexer);
-//            WebParser parser = new WebParser(tokens);
-//            ParseTree tree = parser.htmlDocument();
-//
-//            visitor = new WebVisitor();
-//            HtmlDocument ast = (HtmlDocument) visitor.visit(tree);
-//
-//            System.out.println("------ Abstract Syntax Tree (AST) From File ------");
-//            System.out.println(ast.toString());
-//            System.out.println("--------------------------------------------------");
-//
-//        } catch (Exception e) {
-//            System.err.println("خطأ أثناء قراءة الملف أو التحليل: " + e.getMessage());
-//            e.printStackTrace();
-//        }
-//        System.out.println("================================================");
-//        System.out.println("------ Symbol Table (Variables & Values) ------");
-//        System.out.println("================================================");
-//        visitor.getSymbolTable().print();
-//        System.out.println("--------------------------------------------------");
+        
+        // Testing Jinja2 AST & Symbol Table
+
+        WebVisitor visitor = null;
+        try {
+
+            String filePath = "web.txt";
+            String input = new String(Files.readAllBytes(Paths.get(filePath)));
+
+            // تنفيذ عملية الـ Parsing كالمعتاد
+            WebLexer lexer = new WebLexer(CharStreams.fromString(input));
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            WebParser parser = new WebParser(tokens);
+            ParseTree jtree = parser.htmlDocument();
+
+            visitor = new WebVisitor();
+            HtmlDocument ast = (HtmlDocument) visitor.visit(jtree);
+
+            System.out.println("------ Abstract Syntax Tree (AST) From File ------");
+            System.out.println(ast.toString());
+            System.out.println("--------------------------------------------------");
+
+        } catch (Exception e) {
+            System.err.println("خطأ أثناء قراءة الملف أو التحليل: " + e.getMessage());
+            e.printStackTrace();
+        }
+        System.out.println("================================================");
+        System.out.println("------ Symbol Table (Variables & Values) ------");
+        System.out.println("================================================");
+        visitor.getSymbolTable().print();
+        System.out.println("--------------------------------------------------");
 
     }
 }
