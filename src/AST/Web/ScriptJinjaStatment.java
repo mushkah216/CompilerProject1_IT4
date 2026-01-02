@@ -1,6 +1,6 @@
 package AST.Web;
 
-public class ScriptJinjaStatment extends ScriptNode{
+public class ScriptJinjaStatment extends ScriptNode {
     private JinjaStatement statement;
 
     public ScriptJinjaStatment(JinjaStatement statement, int line,int column) {

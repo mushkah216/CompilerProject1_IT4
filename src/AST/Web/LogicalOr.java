@@ -1,9 +1,9 @@
 package AST.Web;
 
-public  class LogicalOr extends Expression {
+public  class LogicalOr extends AST.Web.Expression {
 
-    private Expression left;
-    private Expression right;
+    private AST.Web.Expression left;
+    private AST.Web.Expression right;
 
     public LogicalOr(Expression left, Expression right , int line, int column) {
         super(line, column);

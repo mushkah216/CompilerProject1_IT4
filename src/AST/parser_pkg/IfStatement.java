@@ -12,7 +12,7 @@ public class IfStatement extends Statement {
     private Expression condition;
     private Block thenBlock;
     private List<ElifPart> elifParts;
-    private ElsePart elsePart; // ممكن يكون null
+    private ElsePart elsePart;
 
     public IfStatement(Expression condition,
                        Block thenBlock,

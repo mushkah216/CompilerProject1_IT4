@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class HtmlAttribute extends HtmlNode {
     private  String name;
-    private ArrayList<AttributeValuePart>parts;
+    private ArrayList<AttributeValuePart> parts;
     public HtmlAttribute(String name, int line, int column){
         super(line,column);
         this.name = name;

@@ -2,6 +2,7 @@ package AST.Web;
 
 import java.util.ArrayList;
 
+
 public class HtmlElement extends HtmlNode {
     private String tagName;
     private ArrayList<HtmlAttribute> attributes;
@@ -21,6 +22,13 @@ public class HtmlElement extends HtmlNode {
 
     @Override
     public String toString() {
-        return "HtmlElement(" + tagName + ") children: " + children.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("HtmlElement [").append(tagName).append("] (Line: ").append(line).append(")");
+        if (!children.isEmpty()) {
+            for (HtmlNode child : children) {
+                sb.append("\n  |-- ").append(child.toString().replace("\n", "\n  "));
+            }
+        }
+        return sb.toString();
     }
 }

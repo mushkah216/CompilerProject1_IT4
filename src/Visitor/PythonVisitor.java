@@ -3,22 +3,27 @@ package Visitor;
 import AST.ASTNode;
 import AST.Statement;
 import AST.parser_pkg.*;
+import SymbolTable.PythonSymbolTable;
 import org.antlr.v4.runtime.tree.ParseTree;
-import parser_pkg.pythonParser;
 import AST.Expression;
+import parser_pkg.pythonParser;
 import parser_pkg.pythonParserBaseVisitor;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 
 public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
+
+    private Set<String> comprehensionVars = new HashSet<>();
+    private PythonSymbolTable symbolTable = new PythonSymbolTable();
+
     @Override
     public ASTNode visit(ParseTree tree) {
         if (tree == null) return null;
-
         ASTNode result = super.visit(tree);
-
         if (result == null) {
             System.err.println("Warning: Visitor returned null for node: " + tree.getText());
         }
@@ -36,22 +41,21 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
                 program.addStatement(stmt);
             }
         }
+        System.out.println("=== Final Global Symbol Table ===");
+        symbolTable.printScope("Global");
 
         return program;
     }
 
     @Override
     public ASTNode visitStatement(pythonParser.StatementContext ctx) {
-        ASTNode node = null;
         if (ctx.compound_stmt() != null) {
-            node= visit(ctx.compound_stmt());
+            return visit(ctx.compound_stmt());
         }
-
         if (ctx.simple_stmt() != null) {
-            node= visit(ctx.simple_stmt());
+            return visit(ctx.simple_stmt());
         }
-
-        return node;
+        return null;
     }
 
     @Override
@@ -60,58 +64,43 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
         if (ctx.importStatement() != null) {
             return visit(ctx.importStatement());
         }
-
         if (ctx.assignment() != null) {
             return visit(ctx.assignment());
         }
-
         if (ctx.returnStatement() != null) {
             return visit(ctx.returnStatement());
         }
-
         if (ctx.expressionStatement() != null) {
             return visit(ctx.expressionStatement());
         }
-
         if (ctx.logic_expr() != null) {
             return visit(ctx.logic_expr());
         }
-
         return null;
     }
 
     @Override
     public ASTNode visitCompound_stmt(pythonParser.Compound_stmtContext ctx) {
-        ASTNode node = null;
+        if (ctx.ifStatement() != null) return visit(ctx.ifStatement());
+        if (ctx.whileStatement() != null) return visit(ctx.whileStatement());
+        if (ctx.forStatement() != null) return visit(ctx.forStatement());
+        if (ctx.functionDef() != null) return visit(ctx.functionDef());
 
-        if (ctx.ifStatement() != null) {
-            node = visit(ctx.ifStatement());
-        } else if (ctx.whileStatement() != null) {
-            node = visit(ctx.whileStatement());
-        } else if (ctx.forStatement() != null) {
-            node = visit(ctx.forStatement());
-        } else if (ctx.functionDef() != null) {
-            node = visit(ctx.functionDef());
-        }
-
-        // ملاحظة: رقم السطر يتم إسناده داخل التوابع الفرعية (مثل visitIfStatement)
-        // لأن كل جملة لها تفاصيلها الخاصة، لكننا نضمن هنا إعادة العقدة بشكل صحيح.
-        return node;
+        return null;
     }
 
     @Override
     public ASTNode visitReturnStatement(pythonParser.ReturnStatementContext ctx) {
-        ReturnStatement returnStmt;
-
-        if (ctx.testList() == null) {
-            returnStmt = new ReturnStatement(null);
-        } else {
-            Expression value = (Expression) visit(ctx.testList());
-            returnStmt = new ReturnStatement(value);
+        Expression value = null;
+        if (ctx.testList() != null) {
+            ASTNode node = visit(ctx.testList());
+            if (node instanceof Expression) {
+                value = (Expression) node;
+            }
         }
 
+        ReturnStatement returnStmt = new ReturnStatement(value);
         returnStmt.setLineNumber(ctx.getStart().getLine());
-
         return returnStmt;
     }
 
@@ -122,10 +111,22 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
 
         for (pythonParser.StatementContext stmtCtx : ctx.statement()) {
             ASTNode node = visit(stmtCtx);
+
+            if (node == null) {
+                System.out.println(
+                        "Warning: Visitor returned null for statement at line "
+                                + stmtCtx.getStart().getLine()
+                );
+                continue;
+            }
+
             if (node instanceof Statement) {
                 block.addStatement((Statement) node);
             } else {
-                System.out.println("Warning: Node is not a Statement: " + node.getClass().getName());
+                System.out.println(
+                        "Warning: Node is not a Statement: "
+                                + node.getClass().getSimpleName()
+                );
             }
         }
         return block;
@@ -135,8 +136,13 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
     public ASTNode visitDecorator(pythonParser.DecoratorContext ctx) {
         List<String> nameParts = new ArrayList<>();
         for (int i = 0; i < ctx.ID().size(); i++) {
+            String currentID = ctx.ID(i).getText();
             nameParts.add(ctx.ID(i).getText());
+            if (symbolTable.lookup(currentID) == null) {
+                System.out.println("Note: Decorator @" + currentID + " used at line " + ctx.getStart().getLine());
+            }
         }
+
         List<Expression> args = null;
         if (ctx.argList() != null) {
             ArgumentList argList = (ArgumentList) visit(ctx.argList());
@@ -155,22 +161,36 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitAssignment(pythonParser.AssignmentContext ctx) {
-        Target target = (Target) visit(ctx.target());
+        ASTNode targetNode = visit(ctx.target());
+        ASTNode valueNode = visit(ctx.expression());
 
-        Expression value = (Expression) visit(ctx.expression());
+        if (targetNode instanceof Target && valueNode instanceof Expression) {
+            Target target = (Target) targetNode;
+            Expression value = (Expression) valueNode;
 
-        Assignment assignment = new Assignment(target, value);
-        assignment.setLineNumber(ctx.getStart().getLine());
+            String varName = target.getBaseName();
+            int line = ctx.getStart().getLine();
 
-        return assignment;
+            symbolTable.define(varName, "Variable", line);
+            System.out.println("Symbol Table Update: Defined '" + varName + "' at line " + line);
+            // ---------------------------
+
+            Assignment assignment = new Assignment(target, value);
+            assignment.setLineNumber(line);
+            return assignment;
+        }
+        return null;
     }
 
     @Override
     public ASTNode visitExpressionStatement(pythonParser.ExpressionStatementContext ctx) {
-        Expression expr = (Expression) visit(ctx.expression());
-        ExpressionStatement exprStmt = new ExpressionStatement(expr);
-        exprStmt.setLineNumber(ctx.getStart().getLine());
-        return exprStmt;
+        ASTNode node = visit(ctx.expression());
+        if (node instanceof Expression) {
+            ExpressionStatement exprStmt = new ExpressionStatement((Expression) node);
+            exprStmt.setLineNumber(ctx.getStart().getLine());
+            return exprStmt;
+        }
+        return null;
     }
 
     @Override
@@ -233,12 +253,20 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitForStatement(pythonParser.ForStatementContext ctx) {
         String variable = ctx.ID().getText();
-        Expression iterable = (Expression) visit(ctx.expression());
-        Block block = (Block) visit(ctx.block());
+        int line = ctx.getStart().getLine();
+
+        symbolTable.define(variable, "Loop-Iterator", line);
+        System.out.println("Symbol Table: Defined Iterator '" + variable + "' at line " + line);
+        // ---------------------------
+
+        ASTNode iterNode = visit(ctx.expression());
+        ASTNode blockNode = visit(ctx.block());
+
+        Expression iterable = (iterNode instanceof Expression) ? (Expression) iterNode : null;
+        Block block = (blockNode instanceof Block) ? (Block) blockNode : null;
 
         ForStatement forStmt = new ForStatement(variable, iterable, block);
-        forStmt.setLineNumber(ctx.getStart().getLine());
-
+        forStmt.setLineNumber(line);
         return forStmt;
     }
 
@@ -267,7 +295,6 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
                 i++;
             }
             module = mod.toString();
-
             if (ctx.MUL() != null) {
                 importAll = true;
             } else {
@@ -277,33 +304,46 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
             }
         }
 
+        if (alias != null) {
+            symbolTable.define(alias, "Module (Alias)", ctx.getStart().getLine());
+        } else if (module != null) {
+            symbolTable.define(module, "Module", ctx.getStart().getLine());
+        }
+
         ImportStatement importStmt = new ImportStatement(isFromImport, module, names, alias, importAll);
         importStmt.setLineNumber(ctx.getStart().getLine());
-
         return importStmt;
     }
+
     @Override
-
     public ASTNode visitFunctionDef(pythonParser.FunctionDefContext ctx) {
-        FunctionDef func = new FunctionDef(ctx.ID().getText());
-        func.setLineNumber(ctx.getStart().getLine());
+        String funcName = ctx.ID().getText();
+        int line = ctx.getStart().getLine();
 
-        for (pythonParser.DecoratorContext dec : ctx.decorator()) {
-            StringBuilder decoratorName = new StringBuilder();
-            decoratorName.append(dec.ID(0).getText());
-            for (int i = 1; i < dec.ID().size(); i++) {
-                decoratorName.append(".").append(dec.ID(i).getText());
-            }
-            func.addDecorator(decoratorName.toString());
-        }
+        symbolTable.define(funcName, "Function", line);
+
+        symbolTable = new PythonSymbolTable(symbolTable);
+        System.out.println(">>> Entering New Scope for function: " + funcName);
+
+        FunctionDef func = new FunctionDef(funcName);
+        func.setLineNumber(line);
 
         if (ctx.parameters() != null) {
-            ParameterList params = (ParameterList) visit(ctx.parameters());
-            func.setParameters(params);
+            ASTNode paramsNode = visit(ctx.parameters());
+            if (paramsNode instanceof ParameterList) {
+                func.setParameters((ParameterList) paramsNode);
+            }
         }
 
-        Block body = (Block) visit(ctx.block());
-        func.setBody(body);
+        ASTNode bodyNode = visit(ctx.block());
+        if (bodyNode instanceof Block) {
+            func.setBody((Block) bodyNode);
+        }
+
+        symbolTable.printScope("Function: " + funcName);
+
+        symbolTable = symbolTable.getParent();
+        System.out.println("<<< Returning to Parent Scope.");
 
         return func;
     }
@@ -314,26 +354,29 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
         params.setLineNumber(ctx.getStart().getLine());
 
         for (int i = 0; i < ctx.ID().size(); i++) {
-            Parameter p = new Parameter(ctx.ID(i).getText());
-            p.setLineNumber(ctx.ID(i).getSymbol().getLine());
+            String paramName = ctx.ID(i).getText();
+            int paramLine = ctx.ID(i).getSymbol().getLine();
+
+            symbolTable.define(paramName, "Parameter", paramLine);
+
+            Parameter p = new Parameter(paramName);
+            p.setLineNumber(paramLine);
             params.addParameter(p);
         }
-
         return params;
     }
 
     @Override
     public ASTNode visitArgument(pythonParser.ArgumentContext ctx) {
-        Expression value = (Expression) visit(ctx.expression());
-        Argument argument;
+        ASTNode node = visit(ctx.expression());
+        Expression value = (node instanceof Expression) ? (Expression) node : null;
 
+        Argument argument;
         if (ctx.ID() != null) {
-            String name = ctx.ID().getText();
-            argument = new Argument(name, value);
+            argument = new Argument(ctx.ID().getText(), value);
         } else {
             argument = new Argument(value);
         }
-
         argument.setLineNumber(ctx.getStart().getLine());
         return argument;
     }
@@ -344,12 +387,11 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
         argList.setLineNumber(ctx.getStart().getLine());
 
         for (pythonParser.ArgumentContext argCtx : ctx.argument()) {
-            Argument arg = (Argument) visit(argCtx);
-            if (arg != null) {
-                argList.addArgument(arg);
+            ASTNode node = visit(argCtx);
+            if (node instanceof Argument) {
+                argList.addArgument((Argument) node);
             }
         }
-
         return argList;
     }
 
@@ -365,10 +407,12 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
         }
 
         for (pythonParser.ExpressionContext exprCtx : ctx.expression()) {
-            Expression index = (Expression) visit(exprCtx);
-            IndexAccess indexAccess = new IndexAccess(index);
-            indexAccess.setLineNumber(exprCtx.getStart().getLine());
-            accesses.add(indexAccess);
+            ASTNode node = visit(exprCtx);
+            if (node instanceof Expression) {
+                IndexAccess indexAccess = new IndexAccess((Expression) node);
+                indexAccess.setLineNumber(exprCtx.getStart().getLine());
+                accesses.add(indexAccess);
+            }
         }
 
         Target target = new Target(baseName, accesses);
@@ -382,9 +426,13 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
             return visit(ctx.logic_expr(0));
         }
 
-        Expression thenExpr = (Expression) visit(ctx.logic_expr(0));
-        Expression condition = (Expression) visit(ctx.logic_expr(1));
-        Expression elseExpr = (Expression) visit(ctx.expression());
+        ASTNode thenNode = visit(ctx.logic_expr(0));
+        ASTNode condNode = visit(ctx.logic_expr(1));
+        ASTNode elseNode = visit(ctx.expression());
+
+        Expression thenExpr = (thenNode instanceof Expression) ? (Expression) thenNode : null;
+        Expression condition = (condNode instanceof Expression) ? (Expression) condNode : null;
+        Expression elseExpr = (elseNode instanceof Expression) ? (Expression) elseNode : null;
 
         ConditionalExpression condExpr = new ConditionalExpression(condition, thenExpr, elseExpr);
         condExpr.setLineNumber(ctx.getStart().getLine());
@@ -408,7 +456,20 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
         } else if (ctx.NONE() != null) {
             result = new NoneLiteral();
         } else if (ctx.ID() != null) {
-            result = new Identifier(ctx.ID().getText());
+            String varName = ctx.ID().getText();
+            int line = ctx.getStart().getLine();
+
+            PythonSymbolTable.Symbol symbol = symbolTable.lookup(varName);
+            if (symbol == null && !comprehensionVars.contains(varName)) {
+                System.err.println(
+                        "Semantic Warning: Variable '" + varName +
+                                "' at line " + line + " is used but not defined."
+                );
+            } else {
+                System.out.println("Symbol Lookup: Found '" + varName + "' (" + symbol.type + ") used at line " + line);
+            }
+
+            result = new Identifier(varName);
         } else if (ctx.listLiteral() != null) {
             return visit(ctx.listLiteral());
         } else if (ctx.dictLiteral() != null) {
@@ -425,33 +486,35 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitLogic_expr(pythonParser.Logic_exprContext ctx) {
-        Expression left = (Expression) visit(ctx.comparison(0));
+        ASTNode leftNode = visit(ctx.comparison(0));
+        Expression left = (leftNode instanceof Expression) ? (Expression) leftNode : null;
 
         for (int i = 1; i < ctx.comparison().size(); i++) {
             String operator = ctx.getChild(2 * i - 1).getText();
-            Expression right = (Expression) visit(ctx.comparison(i));
+            ASTNode rightNode = visit(ctx.comparison(i));
+            Expression right = (rightNode instanceof Expression) ? (Expression) rightNode : null;
 
             GenericBinaryExpression logicExpr = new GenericBinaryExpression(left, operator, right);
             logicExpr.setLineNumber(ctx.getStart().getLine());
             left = logicExpr;
         }
-
         return left;
     }
 
     @Override
     public ASTNode visitComparison(pythonParser.ComparisonContext ctx) {
-        Expression left = (Expression) visit(ctx.arith_expr(0));
+        ASTNode leftNode = visit(ctx.arith_expr(0));
+        Expression left = (leftNode instanceof Expression) ? (Expression) leftNode : null;
 
         for (int i = 1; i < ctx.arith_expr().size(); i++) {
             String op = ctx.getChild(2 * i - 1).getText();
-            Expression right = (Expression) visit(ctx.arith_expr(i));
+            ASTNode rightNode = visit(ctx.arith_expr(i));
+            Expression right = (rightNode instanceof Expression) ? (Expression) rightNode : null;
 
             GenericBinaryExpression compExpr = new GenericBinaryExpression(left, op, right);
             compExpr.setLineNumber(ctx.getStart().getLine());
             left = compExpr;
         }
-
         return left;
     }
 
@@ -468,30 +531,45 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitTestList_comp(pythonParser.TestList_compContext ctx) {
         if (ctx.comp_for() != null) {
-            Expression element = (Expression) visit(ctx.expression(0));
+
+            symbolTable = new PythonSymbolTable(symbolTable);
+
             pythonParser.Comp_forContext cf = ctx.comp_for();
 
-            String loopVar = cf.target().getStart().getText();
+            String loopVar = cf.target().getText();
+            symbolTable.define(loopVar, "Comprehension-Var", cf.getStart().getLine());
+
+            Expression element = (Expression) visit(ctx.expression(0));
             Expression iterable = (Expression) visit(cf.expression());
 
             Expression condition = null;
             if (cf.comp_iter() != null && cf.comp_iter().IF() != null) {
                 condition = (Expression) visit(cf.comp_iter().expression());
-            }
 
-            ListExpression listComp = new ListExpression(element, loopVar, iterable, condition);
-            listComp.setLineNumber(ctx.getStart().getLine());
-            return listComp;
+                ListExpression listComp =
+                        new ListExpression(element, loopVar, iterable, condition);
+
+                listComp.setLineNumber(ctx.getStart().getLine());
+
+                symbolTable = symbolTable.getParent();
+                return listComp;
+            }
+            return super.visitTestList_comp(ctx);
         }
 
         List<Expression> elements = new ArrayList<>();
-        for (pythonParser.ExpressionContext e : ctx.expression()) {
-            elements.add((Expression) visit(e));
+
+        for (pythonParser.ExpressionContext exprCtx : ctx.expression()) {
+            ASTNode node = visit(exprCtx);
+            if (node instanceof Expression) {
+                elements.add((Expression) node);
+            }
         }
 
-        ListExpression listExpr = new ListExpression(elements);
-        listExpr.setLineNumber(ctx.getStart().getLine());
-        return listExpr;
+        ListExpression list = new ListExpression(elements);
+        list.setLineNumber(ctx.getStart().getLine());
+
+        return list;
     }
 
     @Override
@@ -500,26 +578,29 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
         dict.setLineNumber(ctx.getStart().getLine());
 
         for (pythonParser.DictEntryContext entryCtx : ctx.dictEntry()) {
-            Expression key = (Expression) visit(entryCtx.expression(0));
-            Expression value = (Expression) visit(entryCtx.expression(1));
-            dict.addEntry(key, value);
-        }
+            ASTNode keyNode = visit(entryCtx.expression(0));
+            ASTNode valNode = visit(entryCtx.expression(1));
 
+            if (keyNode instanceof Expression && valNode instanceof Expression) {
+                dict.addEntry((Expression) keyNode, (Expression) valNode);
+            }
+        }
         return dict;
     }
 
     @Override
     public ASTNode visitFactor(pythonParser.FactorContext ctx) {
-        Expression expr = (Expression) visit(ctx.atom());
+        ASTNode atomNode = visit(ctx.atom());
+        Expression expr = (atomNode instanceof Expression) ? (Expression) atomNode : null;
 
         for (pythonParser.TrailerContext tr : ctx.trailer()) {
             if (tr.LP() != null) {
                 List<Expression> args = new ArrayList<>();
                 if (tr.argList() != null) {
                     for (pythonParser.ArgumentContext argCtx : tr.argList().argument()) {
-                        Argument argNode = (Argument) visit(argCtx);
-                        if (argNode != null) {
-                            args.add(argNode.getValue());
+                        ASTNode argNode = visit(argCtx);
+                        if (argNode instanceof Argument) {
+                            args.add(((Argument) argNode).getValue());
                         }
                     }
                 }
@@ -528,10 +609,12 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
                 expr = call;
             }
             else if (tr.LC() != null) {
-                Expression index = (Expression) visit(tr.expression());
-                IndexExpression indexExpr = new IndexExpression(expr, index);
-                indexExpr.setLineNumber(tr.getStart().getLine());
-                expr = indexExpr;
+                ASTNode idxNode = visit(tr.expression());
+                if (idxNode instanceof Expression) {
+                    IndexExpression indexExpr = new IndexExpression(expr, (Expression) idxNode);
+                    indexExpr.setLineNumber(tr.getStart().getLine());
+                    expr = indexExpr;
+                }
             }
             else if (tr.DOT() != null) {
                 String name = tr.ID().getText();
@@ -545,11 +628,13 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitArith_expr(pythonParser.Arith_exprContext ctx)  {
-        Expression left = (Expression) visit(ctx.term(0));
+        ASTNode leftNode = visit(ctx.term(0));
+        Expression left = (leftNode instanceof Expression) ? (Expression) leftNode : null;
 
         for (int i = 1; i < ctx.term().size(); i++) {
             String op = ctx.getChild(2 * i - 1).getText();
-            Expression right = (Expression) visit(ctx.term(i));
+            ASTNode rightNode = visit(ctx.term(i));
+            Expression right = (rightNode instanceof Expression) ? (Expression) rightNode : null;
 
             GenericBinaryExpression arithExpr = new GenericBinaryExpression(left, op, right);
             arithExpr.setLineNumber(ctx.getStart().getLine());
@@ -560,16 +645,21 @@ public class PythonVisitor extends pythonParserBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitTerm(pythonParser.TermContext ctx) {
-        Expression left = (Expression) visit(ctx.factor(0));
+        ASTNode leftNode = visit(ctx.factor(0));
+        Expression left = (leftNode instanceof Expression) ? (Expression) leftNode : null;
 
         for (int i = 1; i < ctx.factor().size(); i++) {
             String op = ctx.getChild(2 * i - 1).getText();
-            Expression right = (Expression) visit(ctx.factor(i));
+
+            ASTNode rightNode = visit(ctx.factor(i));
+            Expression right = (rightNode instanceof Expression) ? (Expression) rightNode : null;
 
             GenericBinaryExpression termExpr = new GenericBinaryExpression(left, op, right);
             termExpr.setLineNumber(ctx.getStart().getLine());
+
             left = termExpr;
         }
         return left;
     }
+
 }

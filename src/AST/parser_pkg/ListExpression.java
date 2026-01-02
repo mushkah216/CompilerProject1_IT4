@@ -8,15 +8,12 @@ import java.util.List;
 
 public class ListExpression extends Expression {
 
-    // العناصر داخل الليست (expressions عادية)
     private final List<Expression> elements;
 
-    // optional: comprehension parts
-    private final String loopVariable;        // p
-    private final Expression iterable;         // products
-    private final Expression condition;        // p['id'] == id (optional)
+    private final String loopVariable;
+    private final Expression iterable;
+    private final Expression condition;
 
-    // constructor لليست عادية
     public ListExpression(List<Expression> elements) {
         this.elements = elements;
         this.loopVariable = null;
@@ -24,7 +21,6 @@ public class ListExpression extends Expression {
         this.condition = null;
     }
 
-    // constructor لليست comprehension
     public ListExpression(
             Expression element,
             String loopVariable,

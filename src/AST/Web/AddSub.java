@@ -1,12 +1,12 @@
 package AST.Web;
 
-public class AddSub extends Expression{
+public class AddSub extends AST.Web.Expression {
 
-    private  Expression left;
+    private AST.Web.Expression left;
     private String operator;
-    private Expression right;
+    private AST.Web.Expression right;
 
-    public AddSub(Expression left, String operator, Expression right, int line, int column){
+    public AddSub(AST.Web.Expression left, String operator, AST.Web.Expression right, int line, int column){
         super(line,column);
         this.left = left;
         this.operator = operator;

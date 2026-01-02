@@ -1,11 +1,10 @@
 package AST.Web;
 
 
+public class JinjaExpression extends JinjaNode {
+    private AST.Web.Expression expression;
 
-public class JinjaExpression extends JinjaNode{
-    private Expression expression;
-
-    public JinjaExpression(Expression expression,int line,int column){
+    public JinjaExpression(Expression expression, int line, int column){
         super(line,column);
         this.expression = expression;
     }

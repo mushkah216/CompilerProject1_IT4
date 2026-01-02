@@ -9,10 +9,8 @@ import java.util.List;
 
 public class Decorator extends ASTNode {
 
-    // مثال: @app.route → ["app", "route"]
     private List<String> nameParts;
 
-    // arguments داخل الأقواس إن وجدت
     private List<Expression> arguments;
 
     public Decorator(List<String> nameParts, List<Expression> arguments) {

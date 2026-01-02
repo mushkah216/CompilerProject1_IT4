@@ -16,7 +16,12 @@ public class HtmlDocument extends HtmlNode {
 
     @Override
     public String toString() {
-        return "HtmlDocument " + children.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("HtmlDocument (Line: ").append(line).append(")\n");
+        for (HtmlNode child : children) {
+            sb.append("  |-- ").append(child.toString().replace("\n", "\n  ")).append("\n");
+        }
+        return sb.toString();
     }
 
 }

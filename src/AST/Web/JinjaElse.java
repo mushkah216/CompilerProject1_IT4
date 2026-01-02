@@ -1,6 +1,6 @@
 package AST.Web;
 
-public class JinjaElse extends JinjaStatement{
+public class JinjaElse extends JinjaStatement {
 
     public  JinjaElse(int line, int column){
         super(line,column);

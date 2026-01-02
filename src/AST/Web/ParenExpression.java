@@ -1,9 +1,9 @@
 package AST.Web;
 
-public class ParenExpression extends Expression{
-    private Expression expression;
+public class ParenExpression extends AST.Web.Expression {
+    private AST.Web.Expression expression;
 
-    public ParenExpression(Expression expression, int line,int column){
+    public ParenExpression(Expression expression, int line, int column){
         super(line,column);
         this.expression = expression;
     }

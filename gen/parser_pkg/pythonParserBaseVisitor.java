@@ -1,5 +1,4 @@
-// Generated from C:/CompilerRepo/CompilerProject1_IT4/src/parser_pkg/pythonParser.g4 by ANTLR 4.13.2
-package parser_pkg;
+// Generated from C:/compRepo/CompilerProject1_IT4/src/parser_pkg/pythonParser.g4 by ANTLR 4.13.2
 
     package parser_pkg;
 

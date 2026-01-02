@@ -1,12 +1,11 @@
 package AST.Web;
 
-
 public class JinjaFor extends JinjaStatement
 {
     private String variable;
-    private Expression iterable;
+    private AST.Web.Expression iterable;
 
-    public JinjaFor(String variable, Expression iterable,int line,int column)
+    public JinjaFor(String variable, Expression iterable, int line, int column)
     {
         super(line,column);
         this.variable = variable;

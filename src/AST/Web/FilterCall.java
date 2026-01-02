@@ -1,11 +1,11 @@
 package AST.Web;
 
-public class FilterCall extends Expression{
+public class FilterCall extends AST.Web.Expression {
 
-    private Expression base;
+    private AST.Web.Expression base;
     private FilterName filter;
 
-    public FilterCall(Expression base, FilterName filter ,int line, int column){
+    public FilterCall(AST.Web.Expression base, FilterName filter , int line, int column){
         super(line,column);
         this.base = base;
         this.filter = filter;

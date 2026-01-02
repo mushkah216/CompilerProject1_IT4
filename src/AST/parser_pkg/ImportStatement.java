@@ -6,12 +6,11 @@ import java.util.List;
 
 public class ImportStatement extends Statement {
 
-    // import x, y as z
     private boolean isFromImport;
-    private String module;        // اسم الموديول (مثلاً flask)
-    private List<String> names;   // الأسماء المستوردة
-    private String alias;         // alias (اختياري)
-    private boolean importAll;    // import *
+    private String module;
+    private List<String> names;
+    private String alias;
+    private boolean importAll;
 
     public ImportStatement(boolean isFromImport,
                            String module,

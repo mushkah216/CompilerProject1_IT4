@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ReturnStatement extends Statement {
 
-    private Expression value; // قد تكون null
+    private Expression value;
 
     public ReturnStatement(Expression value) {
         this.value = value;

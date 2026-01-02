@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Argument extends ASTNode {
 
-    private String name; // null إذا positional
+    private String name;
     private Expression value;
 
     public Argument(String name, Expression value) {

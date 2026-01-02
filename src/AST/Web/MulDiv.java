@@ -1,12 +1,12 @@
 package AST.Web;
 
-public class MulDiv extends Expression{
+public class MulDiv extends AST.Web.Expression {
 
-    private Expression left;
+    private AST.Web.Expression left;
     private String operator;
-    private Expression right;
+    private AST.Web.Expression right;
 
-    public MulDiv(Expression left, String operator, Expression right,int line, int column){
+    public MulDiv(Expression left, String operator, Expression right, int line, int column){
         super(line,column);
         this.left=left;
         this.operator=operator;

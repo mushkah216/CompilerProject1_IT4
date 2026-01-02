@@ -1,6 +1,6 @@
 package AST.Web;
 
-//ارجع اعمل ايمبورت ل jinjaExpression
+
 public class AttributeJinjaExpression extends AttributeValuePart {
     private JinjaExpression expression;
 

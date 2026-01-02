@@ -1,6 +1,7 @@
 package AST.Web;
 
-public class CssJinjaStatement extends CssNode{
+
+public class CssJinjaStatement extends CssNode {
 
     private JinjaStatement statement;
     public CssJinjaStatement (JinjaStatement statement , int line,int column){

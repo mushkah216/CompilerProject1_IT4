@@ -138,6 +138,6 @@ WS: [ \t]+ -> skip;
 
 COMMENT: '#' ~[\r\n]* -> skip;
 
-NEWLINE: ( '\r\n' | '\r' | '\n' );
+NEWLINE : '\r'? '\n' ;
 INDENT : ;
 DEDENT : ;

@@ -1,6 +1,7 @@
 package AST.Web;
 
-public class CssJinjaExpression extends CssNode{
+
+public class CssJinjaExpression extends CssNode {
     private JinjaExpression expression;
 
     public CssJinjaExpression(JinjaExpression expression,int line, int column){

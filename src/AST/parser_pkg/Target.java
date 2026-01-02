@@ -8,8 +8,8 @@ import java.util.List;
 
 public class Target extends ASTNode {
 
-    private String baseName;          // أول ID
-    private List<TargetAccess> accesses; // .x أو [expr]
+    private String baseName;
+    private List<TargetAccess> accesses;
 
     public Target(String baseName, List<TargetAccess> accesses) {
         this.baseName = baseName;

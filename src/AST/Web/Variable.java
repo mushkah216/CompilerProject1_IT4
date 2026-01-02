@@ -2,7 +2,7 @@ package AST.Web;
 
 import java.util.List;
 
-public class Variable extends Expression{
+public class Variable extends AST.Web.Expression {
     private List<String>names;
 
     public Variable(List<String> names, int line, int column){
@@ -10,7 +10,7 @@ public class Variable extends Expression{
         this.names = names;
     }
     @Override
-    public String toString(){
-        return String.join(".", names);
+    public String toString() {
+        return "VariableNode [" + String.join(".", names) + "] (Line: " + line + ")";
     }
 }

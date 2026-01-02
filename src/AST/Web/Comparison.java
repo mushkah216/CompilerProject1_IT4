@@ -1,11 +1,12 @@
 package AST.Web;
 
-public class Comparison extends Expression {
 
-    private  Expression left;
+public class Comparison extends AST.Web.Expression {
+
+    private AST.Web.Expression left;
     private String operator;
-    private Expression right;
-    public Comparison(Expression left,String operator, Expression right ,int line, int column)
+    private AST.Web.Expression right;
+    public Comparison(AST.Web.Expression left, String operator, AST.Web.Expression right , int line, int column)
     {
         super(line,column);
         this.left=left;

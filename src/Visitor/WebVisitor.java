@@ -1,195 +1,258 @@
 package Visitor;
 
+import AST.Web.Expression;
 import AST.Web.*;
-import Web.*;
-// تأكد من وجود مكتبة ANTLR في الـ Classpath ليتم التعرف على السطر التالي
-import org.antlr.v4.runtime.tree.TerminalNode;
+import SymbolTable.WebSymbolTable;
+import Web.WebParser;
+import Web.WebParserBaseVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WebVisitor extends WebParserBaseVisitor<Object> {
 
+    private WebSymbolTable symbolTable = new WebSymbolTable();
+    private void enterScope() {
+        symbolTable = new WebSymbolTable(symbolTable);
+        System.out.println(">>> Entering New Scope");
+    }
+
+    private void exitScope() {
+        if (symbolTable.getParent() != null) {
+            System.out.println("<<< Exiting Scope. Local variables cleared.");
+            symbolTable = symbolTable.getParent();
+        }
+    }
+
+
+
     @Override
-    public HtmlDocument visitHtmlDocument(WebParser.HtmlDocumentContext ctx) {
+    public Object visitHtmlDocument(WebParser.HtmlDocumentContext ctx) {
         HtmlDocument doc = new HtmlDocument(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        if (ctx.htmlContent() != null) {
-            List<HtmlNode> nodes = (List<HtmlNode>) visit(ctx.htmlContent());
-            for (HtmlNode node : nodes) {
-                doc.addChild(node);
+        Object content = visit(ctx.htmlContent());
+
+        if (content instanceof List) {
+            for (Object node : (List<?>) content) {
+                if (node instanceof HtmlNode) {
+                    doc.addChild((HtmlNode) node);
+                }
             }
         }
         return doc;
     }
 
-    @Override
-    public List<HtmlNode> visitHtmlContent(WebParser.HtmlContentContext ctx) {
-        List<HtmlNode> nodes = new ArrayList<>();
-        for (int i = 0; i < ctx.getChildCount(); i++) {
-            Object child = visit(ctx.getChild(i));
 
-            if (child instanceof HtmlNode) {
-                // الآن سيقبل HtmlElement و HtmlText و JinjaExpression و JinjaStatement
-                nodes.add((HtmlNode) child);
-            }
-            else if (ctx.getChild(i) instanceof org.antlr.v4.runtime.tree.TerminalNode) {
-                String text = ctx.getChild(i).getText().trim();
-                if (!text.isEmpty()) {
-                    nodes.add(new HtmlText(text, ctx.start.getLine(), ctx.start.getCharPositionInLine()));
+    @Override
+    public Object visitHtmlContent(WebParser.HtmlContentContext ctx) {
+        List<HtmlNode> nodes = new ArrayList<>();
+
+
+        if (ctx.children != null) {
+            for (org.antlr.v4.runtime.tree.ParseTree child : ctx.children) {
+                Object visited = visit(child);
+
+                if (visited instanceof HtmlNode) {
+                    nodes.add((HtmlNode) visited);
+                }
+
+                else if (child instanceof org.antlr.v4.runtime.tree.TerminalNode) {
+                    String text = child.getText().trim();
+                    if (!text.isEmpty()) {
+                        org.antlr.v4.runtime.Token symbol = ((org.antlr.v4.runtime.tree.TerminalNode) child).getSymbol();
+                        nodes.add(new HtmlText(child.getText(), symbol.getLine(), symbol.getCharPositionInLine()));
+                    }
                 }
             }
         }
         return nodes;
     }
 
-    // معالجة الـ Attributes بدقة حسب ملفاتك
-    @Override
-    public HtmlAttribute visitAttribute(WebParser.AttributeContext ctx) {
-        HtmlAttribute attribute = new HtmlAttribute(ctx.TAG_NAME().getText(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        if (ctx.attributeValue() != null) {
-            for (WebParser.AttributeValueContentContext partCtx : ctx.attributeValue().attributeValueContent()) {
-                Object part = visit(partCtx);
-                if (part instanceof AttributeValuePart) {
-                    attribute.addPart((AttributeValuePart) part);
-                } else if (partCtx.ATTVALUE_TEXT() != null) {
-                    attribute.addPart(new AttributeText(partCtx.start.getLine(), partCtx.start.getCharPositionInLine(), partCtx.ATTVALUE_TEXT().getText()));
-                }
-            }
-        }
-        return attribute;
-    }
 
-    // ربط الـ Jinja مع الـ Attributes
     @Override
-    public Object visitAttributeValueContent(WebParser.AttributeValueContentContext ctx) {
-        if (ctx.jinjaExpression() != null) {
-            return new AttributeJinjaExpression((JinjaExpression) visit(ctx.jinjaExpression()), ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        }
-        if (ctx.jinjaStatement() != null) {
-            return new AttributeJinjaStatement((JinjaStatement) visit(ctx.jinjaStatement()), ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        }
-        if (ctx.ATTVALUE_TEXT() != null) {
-            return new AttributeText(ctx.start.getLine(), ctx.start.getCharPositionInLine(), ctx.ATTVALUE_TEXT().getText());
-        }
-        return null;
-    }
-
-    // معالجة الـ CSS
-    @Override
-    public StyleElement visitStyleElement(WebParser.StyleElementContext ctx) {
-        StyleElement style = new StyleElement(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        for (WebParser.StyleContentContext sc : ctx.styleContent()) {
-            Object content = visit(sc);
-            if (content instanceof CssNode) {
-                style.addChild((CssNode) content);
-            }
-        }
-        return style;
-    }
-
-    // معالجة الـ Script
-    @Override
-    public ScriptElement visitScriptElement(WebParser.ScriptElementContext ctx) {
-        ScriptElement script = new ScriptElement(ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        for (WebParser.ScriptContentContext sc : ctx.scriptContent()) {
-            Object content = visit(sc);
-            if (content instanceof ScriptNode) {
-                script.addChild((ScriptNode) content);
-            }
-        }
-        return script;
-    }
-
-    // --- 1. معالجة عناصر HTML ---
-    @Override
-    public HtmlElement visitNormalHtmlElement(WebParser.NormalHtmlElementContext ctx) {
-        // 1. إنشاء العنصر (التاج)
+    public Object visitNormalHtmlElement(WebParser.NormalHtmlElementContext ctx) {
         HtmlElement element = new HtmlElement(ctx.TAG_NAME(0).getText(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
 
-        // 2. إضافة الخصائص (Attributes)
-        if (ctx.attribute() != null) {
-            for (WebParser.AttributeContext attrCtx : ctx.attribute()) {
-                element.addAttribute((HtmlAttribute) visit(attrCtx));
-            }
-        }
 
-        // 3. الخطوة الأهم: إضافة الأبناء (الـ body، الـ h1، الـ Jinja)
-        if (ctx.htmlContent() != null) {
-            Object contentResult = visit(ctx.htmlContent());
-            if (contentResult instanceof List) {
-                List<HtmlNode> children = (List<HtmlNode>) contentResult;
-                for (HtmlNode child : children) {
-                    element.addChild(child); // هنا يتم بناء الشجرة بشكل هرمي
+        Object content = visit(ctx.htmlContent());
+        if (content instanceof List) {
+            for (Object node : (List<?>) content) {
+                if (node instanceof HtmlNode) {
+                    element.addChild((HtmlNode) node);
                 }
             }
         }
-
         return element;
     }
 
-    @Override
-    public HtmlSelfClosingElement visitSelfClosingHtmlElement(WebParser.SelfClosingHtmlElementContext ctx) {
-        HtmlSelfClosingElement element = new HtmlSelfClosingElement(ctx.TAG_NAME().getText(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
-        for (WebParser.AttributeContext attrCtx : ctx.attribute()) {
-            element.addAttribute((HtmlAttribute) visit(attrCtx));
-        }
-        return element;
-    }
-
-    // --- 2. معالجة جمل Jinja2 ---
-    @Override
-    public JinjaExpression visitJinjaExpression(WebParser.JinjaExpressionContext ctx) {
-        Expression expr = (Expression) visit(ctx.expression());
-        return new JinjaExpression(expr, ctx.start.getLine(), ctx.start.getCharPositionInLine());
-    }
 
     @Override
-    public JinjaIf visitJinjaIf(WebParser.JinjaIfContext ctx) {
-        Expression cond = (Expression) visit(ctx.expression());
-        return new JinjaIf(cond, ctx.start.getLine(), ctx.start.getCharPositionInLine());
+    public Object visitJinjaStatement(WebParser.JinjaStatementContext ctx) {
+        return visit(ctx.jinjaStatementBody());
     }
 
+
+
     @Override
-    public JinjaFor visitJinjaFor(WebParser.JinjaForContext ctx) {
+    public Object visitJinjaSet(WebParser.JinjaSetContext ctx) {
         String varName = ctx.JINJA_NAME().getText();
-        Expression iterable = (Expression) visit(ctx.expression());
-        return new JinjaFor(varName, iterable, ctx.start.getLine(), ctx.start.getCharPositionInLine());
+
+
+        Object value = visit(ctx.expression());
+
+        symbolTable.define(varName, value);
+
+        return new AST.Web.JinjaSet(varName, null, ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
     }
 
-    // --- 3. معالجة التعابير الرياضية والمنطقية (المستوى العميق) ---
-    @Override
-    public Expression visitAddSubExpr(WebParser.AddSubExprContext ctx) {
-        // إذا كان هناك طرف واحد فقط
-        if (ctx.term().size() == 1) return (Expression) visit(ctx.term(0));
 
-        Expression left = (Expression) visit(ctx.term(0));
-        for (int i = 1; i < ctx.term().size(); i++) {
-            String op = ctx.getChild(2 * i - 1).getText(); // جلب العملية + أو -
-            Expression right = (Expression) visit(ctx.term(i));
-            left = new AddSub(left, op, right, ctx.start.getLine(), ctx.start.getCharPositionInLine());
+    @Override
+    public Object visitVariableExpr(WebParser.VariableExprContext ctx) {
+        String varName = ctx.JINJA_NAME(0).getText();
+
+
+        Object value = symbolTable.lookup(varName);
+
+        if (value != null) {
+            return value;
         }
+
+        List<String> names = new ArrayList<>();
+        ctx.JINJA_NAME().forEach(n -> names.add(n.getText()));
+        return new AST.Web.Variable(names, ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+    }
+
+    @Override
+    public Object visitNumberLiteral(WebParser.NumberLiteralContext ctx) {
+        return Double.parseDouble(ctx.JINJA_NUMBER().getText());
+    }
+
+    @Override
+    public Object visitStringLiteral(WebParser.StringLiteralContext ctx) {
+        String text = ctx.JINJA_STRING().getText();
+        return text.substring(1, text.length() - 1);
+    }
+
+
+    @Override
+    public Object visitJinjaExpression(WebParser.JinjaExpressionContext ctx) {
+
+        return visit(ctx.expression());
+    }
+    @Override
+    public Object visitAddSubExpr(WebParser.AddSubExprContext ctx) {
+
+        Object left = visit(ctx.term(0));
+
+
+        if (ctx.term().size() > 1) {
+            Object right = visit(ctx.term(1));
+            String operator = ctx.getChild(1).getText();
+
+
+            if (left instanceof Double && right instanceof Double) {
+                return operator.equals("+") ? (Double) left + (Double) right : (Double) left - (Double) right;
+            }
+
+            Expression leftNode = wrapInLiteral(left);
+            Expression rightNode = wrapInLiteral(right);
+            return new AST.Web.AddSub(leftNode, operator, rightNode,
+                    ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
+
+
         return left;
     }
 
-    @Override
-    public Expression visitComparisonExpr(WebParser.ComparisonExprContext ctx) {
-        if (ctx.getChildCount() == 1) return (Expression) visit(ctx.simpleExpression(0));
+    private AST.Web.Expression wrapInLiteral(Object value) {
+        if (value instanceof Expression) {
+            return (AST.Web.Expression) value;
+        } else if (value instanceof Double) {
 
-        Expression left = (Expression) visit(ctx.simpleExpression(0));
-        String op = ctx.getChild(1).getText(); // ==, !=, >, etc.
-        Expression right = (Expression) visit(ctx.simpleExpression(1));
-        return new Comparison(left, op, right, ctx.start.getLine(), ctx.start.getCharPositionInLine());
+            return new AST.Web.NumberLiteral(value.toString(), 0, 0);
+        }
+        return null;
+    }
+    @Override
+    public Object visitMulDivExpr(WebParser.MulDivExprContext ctx) {
+
+        Object left = visit(ctx.factor(0));
+
+
+        if (ctx.factor().size() > 1) {
+            Object right = visit(ctx.factor(1));
+            String operator = ctx.getChild(1).getText();
+
+            if (left instanceof Double && right instanceof Double) {
+                double l = (Double) left;
+                double r = (Double) right;
+                if (operator.equals("*")) return l * r;
+                if (operator.equals("/")) return r != 0 ? l / r : 0.0;
+            }
+        }
+        return left;
+    }
+    @Override
+    public Object visitParenExpr(WebParser.ParenExprContext ctx) {
+
+        return visit(ctx.expression());
     }
 
     @Override
-    public NumberLiteral visitNumberLiteral(WebParser.NumberLiteralContext ctx) {
-        return new NumberLiteral(ctx.JINJA_NUMBER().getText(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
+    public Object visitComparisonExpr(WebParser.ComparisonExprContext ctx) {
+        Object left = visit(ctx.simpleExpression(0));
+
+        if (ctx.simpleExpression().size() > 1) {
+            Object right = visit(ctx.simpleExpression(1));
+            String op = ctx.getChild(1).getText();
+
+            if (left instanceof Double && right instanceof Double) {
+                double l = (Double) left;
+                double r = (Double) right;
+                switch (op) {
+                    case "<":  return l < r;
+                    case ">":  return l > r;
+                    case "<=": return l <= r;
+                    case ">=": return l >= r;
+                    case "==": return l == r;
+                    case "!=": return l != r;
+                }
+            }
+        }
+        return left;
+    }
+    @Override
+    public Object visitJinjaIf(WebParser.JinjaIfContext ctx) {
+        System.out.println("Found IF statement at line " + ctx.start.getLine());
+        enterScope();
+        return visitChildren(ctx);
+    }
+    @Override
+    public Object visitJinjaEndIf(WebParser.JinjaEndIfContext ctx) {
+        exitScope();
+        return visitChildren(ctx);
     }
 
     @Override
-    public Variable visitVariableExpr(WebParser.VariableExprContext ctx) {
-        List<String> names = new ArrayList<>();
-        ctx.JINJA_NAME().forEach(n -> names.add(n.getText()));
-        return new Variable(names, ctx.start.getLine(), ctx.start.getCharPositionInLine());
+    public Object visitJinjaFor(WebParser.JinjaForContext ctx) {
+        enterScope();
+
+        String varName = ctx.JINJA_NAME().getText();
+        symbolTable.define(varName, "LoopValue");
+
+
+        System.out.println("Inside FOR Loop Scope:");
+        symbolTable.print();
+
+        Object result = visitChildren(ctx);
+
+        exitScope();
+        return result;
     }
+
+    @Override
+    public Object visitJinjaEndFor(WebParser.JinjaEndForContext ctx) {
+        exitScope();
+        return visitChildren(ctx);
+    }
+
 }

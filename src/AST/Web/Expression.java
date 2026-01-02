@@ -1,11 +1,9 @@
 package AST.Web;
 
-public abstract class Expression {
-    public int line;
-    public int column;
+public abstract class Expression extends HtmlNode {
+
     public Expression(int line, int column){
-        this.line = line;
-        this.column = column;
+        super(line, column);
     }
     @Override
     public abstract String toString();

@@ -2,7 +2,7 @@ package AST.Web;
 
 import java.util.ArrayList;
 
-public class ScriptElement extends ScriptNode{
+public class ScriptElement extends ScriptNode {
     private ArrayList<ScriptNode> children;
 
     public  ScriptElement(int line, int column) {
