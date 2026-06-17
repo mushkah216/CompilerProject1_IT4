@@ -1,0 +1,18 @@
+from flask import Flask, render_template, request
+
+def add(a, b):
+    return a + b
+
+def greet(name):
+    x = "Hello"
+    return x
+
+x = 5 + "hello"
+
+total = unknown_var + x
+
+add(1)
+
+foo(1, 2)
+
+return 99
